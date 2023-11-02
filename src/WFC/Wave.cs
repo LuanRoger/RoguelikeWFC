@@ -11,11 +11,12 @@ public class Wave
         this.width = width;
         this.height = height;
         wave = new WavePossition[width, height];
-        for (int i = 0; i < width * height; i++)
+        for (int row = 0; row < height; row++)
         {
-            int row = i / width;
-            int col = i % width;
-            wave[col, row] = new(Array.Empty<int>());
+            for (int col = 0; col < width; col++)
+            {
+                wave[col, row] = new(Array.Empty<int>());
+            }
         }
     }
     

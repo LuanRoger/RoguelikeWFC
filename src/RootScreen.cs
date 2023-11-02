@@ -1,4 +1,5 @@
-﻿using RoguelikeWFC.WFC;
+﻿using RoguelikeWFC.Tiles;
+using RoguelikeWFC.WFC;
 
 namespace RoguelikeWFC;
 
@@ -17,11 +18,7 @@ internal class RootScreen : ScreenObject
         _mainSurface = new(width, height);
         Children.Add(_mainSurface);
         
-        map = new(width, height)
-        {
-            tiles = FlorestTiles.Tiles,
-            nullTile = FlorestTiles.NullTile
-        };
+        map = new(width, height, FlorestTiles.Instance);
         map.Init();
     }
 
