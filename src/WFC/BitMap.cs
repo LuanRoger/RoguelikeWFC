@@ -1,34 +1,35 @@
-﻿namespace RoguelikeWFC.WFC;
+﻿using RoguelikeWFC.Tiles;
+
+namespace RoguelikeWFC.WFC;
 
 public class BitMap
 {
-    /// <summary>
-    /// Tile that can be used in this map
-    /// </summary>
-    public required MapTile[] tiles { get; init; }
-    public required MapTile nullTile { get; init; }
+    private readonly TileSet _tileSet;
+    private MapTile[] tiles => _tileSet.Tiles;
     /// <summary>
     /// Map width
     /// </summary>
-    public int width { get; }
+    private int width { get; }
     /// <summary>
     /// Map height
     /// </summary>
-    public int height { get; }
+    private int height { get; }
     
     private Wave wave { get; }
+    private readonly MapTile _nullTile = new NullTile();
 
-    public BitMap(int width, int height)
+    public BitMap(int width, int height, TileSet tileSet)
     {
         this.width = width;
         this.height = height;
         wave = new(width, height);
+        _tileSet = tileSet;
     }
     
     public void Init()
     {
         foreach (WavePossition wavePossition in wave.wave)
-            wavePossition.entropy = GetAllTilesId();
+            wavePossition.entropy = _tileSet.ValidInitialTiles();
     }
     
     public void Wfc()
@@ -41,16 +42,16 @@ public class BitMap
         WavePossition possition = GetSmallerEntropyPossition();
         int tileId = GetRandomTileFromPossition(possition);
         //Collapse into one tile
-        possition.entropy = new[] {tileId};
-            
+        possition.entropy = new[] { tileId };
+        
         PropagateState();
     }
     
     public void PropagateState()
     {
-        for (int row = 0; row < height - 1; row++)
+        for (int row = 0; row < height; row++)
         {
-            for (int col = 0; col < width - 1; col++)
+            for (int col = 0; col < width; col++)
             {
                 WavePossition possition = wave.wave[col, row];
                 if(!possition.collapsed)
@@ -59,11 +60,10 @@ public class BitMap
                 int tileId = possition.entropy[0];
                 TileSocket socketMapTile = GetTileById(tileId)!.tileSocket;
                 
-                //Get surrounding tiles
-                int left = col - 1;
-                int right = col + 1;
                 int top = row - 1;
+                int right = col + 1;
                 int bottom = row + 1;
+                int left = col - 1;
                 
                 List<int> currentEntropy;
                 List<int> newEntropy;
@@ -71,39 +71,55 @@ public class BitMap
                 if(left >= 0 && left < width)
                 {
                     WavePossition leftPossition = wave.wave[left, row];
+                    if(leftPossition.collapsed)
+                        goto LeftEndPropagation;
                     currentEntropy = leftPossition.entropy.ToList();
-                    newEntropy = socketMapTile.canFit.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
+                    newEntropy = socketMapTile.fitLeft.ToList();
+                    enumerable = currentEntropy.Intersect(newEntropy)
+                        .Union(newEntropy);
                     leftPossition.entropy = enumerable.ToArray();
                 }
+                LeftEndPropagation:
                 
                 if(right >= 0 && right < width)
                 {
                     WavePossition rightPossition = wave.wave[right, row];
+                    if(rightPossition.collapsed)
+                        goto RightEndPropagation;
                     currentEntropy = rightPossition.entropy.ToList();
-                    newEntropy = socketMapTile.canFit.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
+                    newEntropy = socketMapTile.fitRight.ToList();
+                    enumerable = currentEntropy.Intersect(newEntropy)
+                        .Union(newEntropy);
                     rightPossition.entropy = enumerable.ToArray();
                 }
+                RightEndPropagation:
                 
                 if(top >= 0 && top < height)
                 {
                     WavePossition topPossition = wave.wave[col, top];
+                    if(topPossition.collapsed)
+                        goto TopEndPropagation;
                     currentEntropy = topPossition.entropy.ToList();
-                    newEntropy = socketMapTile.canFit.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
+                    newEntropy = socketMapTile.fitTop.ToList();
+                    enumerable = currentEntropy.Intersect(newEntropy)
+                        .Union(newEntropy);
                     topPossition.entropy = enumerable.ToArray();   
                 }
+                TopEndPropagation:
                 
                 // ReSharper disable once InvertIf
                 if(bottom >= 0 && bottom < height)
                 {
                     WavePossition bottomPossition = wave.wave[col, bottom];
+                    if(bottomPossition.collapsed)
+                        goto BottomEndPropagation;
                     currentEntropy = bottomPossition.entropy.ToList();
-                    newEntropy = socketMapTile.canFit.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
+                    newEntropy = socketMapTile.fitBottom.ToList();
+                    enumerable = currentEntropy.Intersect(newEntropy)
+                        .Union(newEntropy);
                     bottomPossition.entropy = enumerable.ToArray();
                 }
+                BottomEndPropagation:;
             }
         }
     }
@@ -150,9 +166,6 @@ public class BitMap
             return new TextTile(possition.entropy.Length.ToString()[0]);
         
         int tileId = possition.entropy[0];
-        return GetTileById(tileId) ?? nullTile;
+        return GetTileById(tileId) ?? _nullTile;
     }
-    
-    private int[] GetAllTilesId() =>
-        tiles.Select(tile => tile.id).ToArray();
 }

@@ -2,13 +2,16 @@
 
 public struct TileSocket
 {
-    /// <summary>
-    /// The tile id that this tile can fit with
-    /// </summary>
-    public int[] canFit { get; }
-    
-    public TileSocket(int[] canFit)
+    public static TileSocket Empty => new()
     {
-        this.canFit = canFit;
-    }
+        fitTop = Array.Empty<int>(),
+        fitRight = Array.Empty<int>(),
+        fitBottom = Array.Empty<int>(),
+        fitLeft = Array.Empty<int>()
+    };
+    
+    public required int[] fitTop { get; init; }
+    public required int[] fitRight { get; init; }
+    public required int[] fitBottom { get; init; }
+    public required int[] fitLeft { get; init; }
 }
