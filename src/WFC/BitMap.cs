@@ -40,11 +40,59 @@ public class BitMap
     public void InterateWfcOnce()
     {
         WavePossition possition = GetSmallerEntropyPossition();
-        int tileId = GetRandomTileFromPossition(possition);
-        //Collapse into one tile
+        byte tileId = GetRandomTileFromPossition(possition);
         possition.entropy = new[] { tileId };
+
+        do
+        {
+            PropagateState();
+        } while (UnpropagateNonCollapsed());
+    }
+    
+    public bool UnpropagateNonCollapsed()
+    {
+        for (int row = 0; row < height; row++)
+        {
+            for (int col = 0; col < width; col++)
+            {
+                WavePossition possition = wave.wave[col, row];
+                if(possition.entropy.Any())
+                    continue;
+                
+                possition.entropy = _tileSet.ValidInitialTiles();
+                
+                int top = row - 1;
+                int right = col + 1;
+                int bottom = row + 1;
+                int left = col - 1;
+                
+                if(left >= 0 && left < width)
+                {
+                    WavePossition leftPossition = wave.wave[left, row];
+                    leftPossition.entropy = _tileSet.ValidInitialTiles();
+                }
+                if(right >= 0 && right < width)
+                {
+                    WavePossition rightPossition = wave.wave[right, row];
+                    rightPossition.entropy = _tileSet.ValidInitialTiles();
+                }
+                if(top >= 0 && top < height)
+                {
+                    WavePossition topPossition = wave.wave[col, top];
+                    topPossition.entropy = _tileSet.ValidInitialTiles();   
+                }
+                // ReSharper disable once InvertIf
+                if(bottom >= 0 && bottom < height)
+                {
+                    WavePossition bottomPossition = wave.wave[col, bottom];
+                    bottomPossition.entropy = _tileSet.ValidInitialTiles();
+                }
+                
+                return true;
+            }
+        }
         
-        PropagateState();
+        return false;
     }
     
     public void PropagateState()
@@ -57,7 +105,7 @@ public class BitMap
                 if(!possition.collapsed)
                     continue;
                 
-                int tileId = possition.entropy[0];
+                byte tileId = possition.entropy[0];
                 TileSocket socketMapTile = GetTileById(tileId)!.tileSocket;
                 
                 int top = row - 1;
@@ -65,18 +113,15 @@ public class BitMap
                 int bottom = row + 1;
                 int left = col - 1;
                 
-                List<int> currentEntropy;
-                List<int> newEntropy;
-                IEnumerable<int> enumerable;
+                List<byte> currentEntropy;
+                List<byte> newEntropy;
+                IEnumerable<byte> enumerable;
                 if(left >= 0 && left < width)
                 {
                     WavePossition leftPossition = wave.wave[left, row];
-                    if(leftPossition.collapsed)
-                        goto LeftEndPropagation;
                     currentEntropy = leftPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitLeft.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy)
-                        .Union(newEntropy);
+                    enumerable = currentEntropy.Intersect(newEntropy);
                     leftPossition.entropy = enumerable.ToArray();
                 }
                 LeftEndPropagation:
@@ -84,12 +129,9 @@ public class BitMap
                 if(right >= 0 && right < width)
                 {
                     WavePossition rightPossition = wave.wave[right, row];
-                    if(rightPossition.collapsed)
-                        goto RightEndPropagation;
                     currentEntropy = rightPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitRight.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy)
-                        .Union(newEntropy);
+                    enumerable = currentEntropy.Intersect(newEntropy);
                     rightPossition.entropy = enumerable.ToArray();
                 }
                 RightEndPropagation:
@@ -97,12 +139,9 @@ public class BitMap
                 if(top >= 0 && top < height)
                 {
                     WavePossition topPossition = wave.wave[col, top];
-                    if(topPossition.collapsed)
-                        goto TopEndPropagation;
                     currentEntropy = topPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitTop.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy)
-                        .Union(newEntropy);
+                    enumerable = currentEntropy.Intersect(newEntropy);
                     topPossition.entropy = enumerable.ToArray();   
                 }
                 TopEndPropagation:
@@ -111,12 +150,9 @@ public class BitMap
                 if(bottom >= 0 && bottom < height)
                 {
                     WavePossition bottomPossition = wave.wave[col, bottom];
-                    if(bottomPossition.collapsed)
-                        goto BottomEndPropagation;
                     currentEntropy = bottomPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitBottom.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy)
-                        .Union(newEntropy);
+                    enumerable = currentEntropy.Intersect(newEntropy);
                     bottomPossition.entropy = enumerable.ToArray();
                 }
                 BottomEndPropagation:;
@@ -141,7 +177,7 @@ public class BitMap
         return smallerEntropy;
     }
 
-    private int GetRandomTileFromPossition(WavePossition possition)
+    private static byte GetRandomTileFromPossition(WavePossition possition)
     {
         Random rng = new();
         int tileIndex = rng.Next(0, possition.entropy.Length);
