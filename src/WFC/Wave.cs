@@ -15,7 +15,7 @@ public class Wave
         {
             for (int col = 0; col < width; col++)
             {
-                wave[col, row] = new(Array.Empty<int>());
+                wave[col, row] = new(Array.Empty<byte>());
             }
         }
     }

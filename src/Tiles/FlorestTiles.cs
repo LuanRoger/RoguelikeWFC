@@ -6,88 +6,74 @@ namespace RoguelikeWFC.Tiles;
 
 public class GrassTile : MapTile
 {
-    public override int id => 1;
-    public override char sprite => '.';
-    public override Color color => Color.AnsiGreen;
-    public override TileSocket tileSocket => 
+    public GrassTile() : base(TileIDs.Grass, 249, Color.AnsiGreen,
         new()
         {
-            fitTop = new[] { 1, 2, 4, 6, 7 },
-            fitRight = new[] { 1, 2, 4, 6, 7 },
-            fitBottom = new[] { 1, 2, 4, 6, 7 },
-            fitLeft = new[] { 1, 2, 4, 6, 7 }
-        };
+            fitTop = new byte[] { TileIDs.Grass, TileIDs.Tree, TileIDs.Mountain, TileIDs.Sand, TileIDs.Dirt },
+            fitRight = new byte[] { TileIDs.Grass, TileIDs.Tree, TileIDs.Mountain, TileIDs.Sand, TileIDs.Dirt },
+            fitBottom = new byte[] { TileIDs.Grass, TileIDs.Tree, TileIDs.Mountain, TileIDs.Sand, TileIDs.Dirt },
+            fitLeft = new byte[] { TileIDs.Grass, TileIDs.Tree, TileIDs.Mountain, TileIDs.Sand, TileIDs.Dirt }
+        }) { }
 }
 
 public class TreeTile : MapTile
 {
-    public override int id => 2;
-    public override char sprite => 'T';
-    public override Color color => Color.Brown;
-    public override TileSocket tileSocket => 
+    public TreeTile() : base(TileIDs.Tree, 231, Color.Brown, 
         new()
         {
-            fitTop = new[] { 1, 2 },
-            fitRight = new[] { 2, 6, 1, 7 },
-            fitBottom = new[] { 1, 2 },
-            fitLeft = new[] { 2, 6, 1, 7 }
-        };
+            fitTop = new byte[] { TileIDs.Tree, TileIDs.Grass },
+            fitRight = new byte[] { TileIDs.Tree, TileIDs.Grass, TileIDs.Dirt },
+            fitBottom = new byte[] { TileIDs.Tree, TileIDs.Grass },
+            fitLeft = new byte[] { TileIDs.Tree, TileIDs.Grass, TileIDs.Dirt }
+        }) { }
 }
 
 public class WaterTile : MapTile
 {
-    public override int id => 3;
-    public override char sprite => '~';
-    public override Color color => Color.AnsiBlue;
-    public override TileSocket tileSocket => new()
-    {
-        fitTop = new[] { 3, 6, 7 },
-        fitRight = new[] { 3, 6, 7 },
-        fitBottom = new[] { 3, 6, 7 },
-        fitLeft = new[] { 3, 6, 7 }
-    };
+    public WaterTile() : base(TileIDs.Water, 247, Color.AnsiBlue, 
+        new()
+        {
+            fitTop = new byte[] { TileIDs.Water, TileIDs.Sand, TileIDs.Dirt },
+            fitRight = new byte[] { TileIDs.Water, TileIDs.Sand, TileIDs.Dirt },
+            fitBottom = new byte[] { TileIDs.Water, TileIDs.Sand, TileIDs.Dirt },
+            fitLeft = new byte[] { TileIDs.Water, TileIDs.Sand, TileIDs.Dirt }
+        }) { }
 }
 
 public class MountainTile : MapTile
 {
-    public override int id => 4;
-    public override char sprite => '^';
-    public override Color color => Color.AnsiWhite;
-    public override TileSocket tileSocket => new()
-    {
-        fitTop = new[] { 1, 4 },
-        fitRight = new[] { 1, 4 },
-        fitBottom = new[] { 1, 4 },
-        fitLeft = new[] { 1, 4 }
-    };
+    public MountainTile() : base(TileIDs.Mountain, 30, Color.AnsiWhite, 
+        new()
+        {
+            fitTop = new byte[] { TileIDs.Mountain, TileIDs.Grass },
+            fitRight = new byte[] { TileIDs.Mountain, TileIDs.Grass },
+            fitBottom = new byte[] { TileIDs.Mountain, TileIDs.Grass },
+            fitLeft = new byte[] { TileIDs.Mountain, TileIDs.Grass }
+        }) { }
 }
 
 public class SandTile : MapTile
 {
-    public override int id => 6;
-    public override char sprite => '.';
-    public override Color color => Color.AnsiYellow;
-    public override TileSocket tileSocket => new()
-    {
-        fitTop = new[] { 6, 1, 4 },
-        fitRight = new[] { 6, 1, 4 },
-        fitBottom = new[] { 6, 1, 4 },
-        fitLeft = new[] { 6, 1, 4 }
-    };
+    public SandTile() : base(TileIDs.Sand, 249, Color.AnsiYellow, 
+        new()
+        {
+            fitTop = new byte[] { TileIDs.Sand, TileIDs.Grass, TileIDs.Water },
+            fitRight = new byte[] { TileIDs.Sand, TileIDs.Grass, TileIDs.Water },
+            fitBottom = new byte[] { TileIDs.Sand, TileIDs.Grass, TileIDs.Water },
+            fitLeft = new byte[] { TileIDs.Sand, TileIDs.Grass, TileIDs.Water }
+        }) { }
 }
 
 public class DirtTile : MapTile
 {
-    public override int id => 7;
-    public override char sprite => '.';
-    public override Color color => Color.SaddleBrown;
-    public override TileSocket tileSocket => new()
-    {
-        fitTop = new[] { 7, 1, 2 },
-        fitRight = new[] { 7, 1, 2 },
-        fitBottom = new[] { 7, 1, 2 },
-        fitLeft = new[] { 7, 1, 2 },
-    };
+    public DirtTile() : base(TileIDs.Dirt, 249,  Color.SandyBrown, 
+        new()
+        {
+            fitTop = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
+            fitRight = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
+            fitBottom = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
+            fitLeft = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
+        }) { }
 }
 
 public class FlorestTiles : TileSet
@@ -112,7 +98,4 @@ public class FlorestTiles : TileSet
         new DirtTile(),
         new SandTile(),
         }) { }
-
-    public override int[] ValidInitialTiles() =>
-        new[] { 1, 2, 3, 4 };
 }

@@ -4,14 +4,14 @@ public struct TileSocket
 {
     public static TileSocket Empty => new()
     {
-        fitTop = Array.Empty<int>(),
-        fitRight = Array.Empty<int>(),
-        fitBottom = Array.Empty<int>(),
-        fitLeft = Array.Empty<int>()
+        fitTop = Array.Empty<byte>(),
+        fitRight = Array.Empty<byte>(),
+        fitBottom = Array.Empty<byte>(),
+        fitLeft = Array.Empty<byte>()
     };
     
-    public required int[] fitTop { get; init; }
-    public required int[] fitRight { get; init; }
-    public required int[] fitBottom { get; init; }
-    public required int[] fitLeft { get; init; }
+    public required byte[] fitTop { get; init; }
+    public required byte[] fitRight { get; init; }
+    public required byte[] fitBottom { get; init; }
+    public required byte[] fitLeft { get; init; }
 }

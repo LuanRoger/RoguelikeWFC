@@ -11,5 +11,6 @@ public abstract class TileSet
         Tiles = tiles;
     }
     
-    public abstract int[] ValidInitialTiles();
+    public byte[] ValidInitialTiles() => 
+        Tiles.Select(tile => tile.id).ToArray();
 }
