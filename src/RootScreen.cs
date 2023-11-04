@@ -31,8 +31,8 @@ internal class RootScreen : ScreenObject
         {
             for (int col = 0; col < width - 1; col++)
             {
-                MapTile tile = map.GetTileAtPossition(col, row);
-                _mainSurface.SetGlyph(row, col, tile.sprite, tile.color);
+                MapTile tile = map.GetTileAtPossition(row, col);
+                _mainSurface.SetGlyph(col, row, tile.glyph, tile.color);
             }
         }
         

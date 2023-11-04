@@ -10,12 +10,12 @@ public class Wave
     {
         this.width = width;
         this.height = height;
-        wave = new WavePossition[width, height];
+        wave = new WavePossition[height, width];
         for (int row = 0; row < height; row++)
         {
             for (int col = 0; col < width; col++)
             {
-                wave[col, row] = new(Array.Empty<byte>());
+                wave[row, col] = new(Array.Empty<byte>());
             }
         }
     }

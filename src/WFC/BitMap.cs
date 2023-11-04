@@ -55,7 +55,7 @@ public class BitMap
         {
             for (int col = 0; col < width; col++)
             {
-                WavePossition possition = wave.wave[col, row];
+                WavePossition possition = wave.wave[row, col];
                 if(possition.entropy.Any())
                     continue;
                 
@@ -68,23 +68,23 @@ public class BitMap
                 
                 if(left >= 0 && left < width)
                 {
-                    WavePossition leftPossition = wave.wave[left, row];
+                    WavePossition leftPossition = wave.wave[row, left];
                     leftPossition.entropy = _tileSet.ValidInitialTiles();
                 }
                 if(right >= 0 && right < width)
                 {
-                    WavePossition rightPossition = wave.wave[right, row];
+                    WavePossition rightPossition = wave.wave[row, right];
                     rightPossition.entropy = _tileSet.ValidInitialTiles();
                 }
                 if(top >= 0 && top < height)
                 {
-                    WavePossition topPossition = wave.wave[col, top];
+                    WavePossition topPossition = wave.wave[top, col];
                     topPossition.entropy = _tileSet.ValidInitialTiles();   
                 }
                 // ReSharper disable once InvertIf
                 if(bottom >= 0 && bottom < height)
                 {
-                    WavePossition bottomPossition = wave.wave[col, bottom];
+                    WavePossition bottomPossition = wave.wave[bottom, col];
                     bottomPossition.entropy = _tileSet.ValidInitialTiles();
                 }
                 
@@ -101,7 +101,7 @@ public class BitMap
         {
             for (int col = 0; col < width; col++)
             {
-                WavePossition possition = wave.wave[col, row];
+                WavePossition possition = wave.wave[row, col];
                 if(!possition.collapsed)
                     continue;
                 
@@ -118,7 +118,7 @@ public class BitMap
                 IEnumerable<byte> enumerable;
                 if(left >= 0 && left < width)
                 {
-                    WavePossition leftPossition = wave.wave[left, row];
+                    WavePossition leftPossition = wave.wave[row, left];
                     currentEntropy = leftPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitLeft.ToList();
                     enumerable = currentEntropy.Intersect(newEntropy);
@@ -128,7 +128,7 @@ public class BitMap
                 
                 if(right >= 0 && right < width)
                 {
-                    WavePossition rightPossition = wave.wave[right, row];
+                    WavePossition rightPossition = wave.wave[row, right];
                     currentEntropy = rightPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitRight.ToList();
                     enumerable = currentEntropy.Intersect(newEntropy);
@@ -138,7 +138,7 @@ public class BitMap
                 
                 if(top >= 0 && top < height)
                 {
-                    WavePossition topPossition = wave.wave[col, top];
+                    WavePossition topPossition = wave.wave[top, col];
                     currentEntropy = topPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitTop.ToList();
                     enumerable = currentEntropy.Intersect(newEntropy);
@@ -149,7 +149,7 @@ public class BitMap
                 // ReSharper disable once InvertIf
                 if(bottom >= 0 && bottom < height)
                 {
-                    WavePossition bottomPossition = wave.wave[col, bottom];
+                    WavePossition bottomPossition = wave.wave[bottom, col];
                     currentEntropy = bottomPossition.entropy.ToList();
                     newEntropy = socketMapTile.fitBottom.ToList();
                     enumerable = currentEntropy.Intersect(newEntropy);
@@ -195,9 +195,9 @@ public class BitMap
         return null;
     }
     
-    public MapTile GetTileAtPossition(int columnIndex, int rowIndex)
+    public MapTile GetTileAtPossition(int rowIndex, int columnIndex)
     {
-        WavePossition possition = wave.wave[columnIndex, rowIndex];
+        WavePossition possition = wave.wave[rowIndex, columnIndex];
         if(!possition.collapsed)
             return new TextTile(possition.entropy.Length.ToString()[0]);
         
