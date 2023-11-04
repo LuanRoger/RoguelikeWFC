@@ -69,10 +69,10 @@ public class DirtTile : MapTile
     public DirtTile() : base(TileIDs.Dirt, 249,  Color.SandyBrown, 
         new()
         {
-            fitTop = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
-            fitRight = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
-            fitBottom = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
-            fitLeft = new byte[] { TileIDs.Dirt, TileIDs.Grass, TileIDs.Tree, TileIDs.Water },
+            fitTop = new byte[] { TileIDs.Dirt, TileIDs.Grass },
+            fitRight = new byte[] { TileIDs.Dirt, TileIDs.Grass },
+            fitBottom = new byte[] { TileIDs.Dirt, TileIDs.Grass },
+            fitLeft = new byte[] { TileIDs.Dirt, TileIDs.Grass },
         }) { }
 }
 

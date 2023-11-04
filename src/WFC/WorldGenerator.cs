@@ -155,4 +155,6 @@ public class WorldGenerator
     
     public MapTile GetTileAtPossition(int rowIndex, int columnIndex) =>
         _bitMap.GetTileAtPossition(rowIndex, columnIndex);
+    
+    public void ResetMap() => _bitMap.Init();
 }
