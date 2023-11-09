@@ -2,18 +2,18 @@
 
 namespace RoguelikeWFC.WFC;
 
-public class BitMap
+public class WaveMap
 {
     public int width { get; }
     public int height { get; }
     private readonly TileSet _tileSet;
-    private MapTile[] tiles => _tileSet.Tiles;
+    private IEnumerable<MapTile> tiles => _tileSet.Tiles;
     public Wave wave { get; }
     private readonly MapTile _nullTile = new NullTile();
     
     public bool initialized { get; private set; }
 
-    public BitMap(int width, int height, TileSet tileSet)
+    public WaveMap(int width, int height, TileSet tileSet)
     {
         this.width = width;
         this.height = height;
@@ -24,7 +24,7 @@ public class BitMap
     public void Init()
     {
         foreach (WavePossition wavePossition in wave.wave)
-            wavePossition.entropy = _tileSet.ValidInitialTiles();
+            wavePossition.entropy = ValidInitialTiles();
         initialized = true;
     }
     
@@ -55,7 +55,7 @@ public class BitMap
         return possition.entropy[tileIndex];
     }
     
-    public MapTile? GetTileById(int id)
+    public MapTile GetTileById(int id)
     {
         foreach (MapTile tile in tiles)
         {
@@ -63,7 +63,7 @@ public class BitMap
                 return tile;
         }
         
-        return null;
+        return _nullTile;
     }
     
     public MapTile GetTileAtPossition(int rowIndex, int columnIndex)
@@ -73,6 +73,6 @@ public class BitMap
             return new TextTile(possition.entropy.Length.ToString()[0]);
         
         int tileId = possition.entropy[0];
-        return GetTileById(tileId) ?? _nullTile;
+        return GetTileById(tileId);
     }
 }
