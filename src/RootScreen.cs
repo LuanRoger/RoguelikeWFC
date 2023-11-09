@@ -38,7 +38,7 @@ internal class RootScreen : ScreenObject
         if(_generationReady)
             return;
         
-        if(!worldGenerator.AllCollapsed())
+        if(!worldGenerator.allCollapsed)
         {
             worldGenerator.InterateWfcOnce();
             DrawnMap();

@@ -1,22 +1,23 @@
-﻿using RoguelikeWFC.Tiles;
+﻿using RoguelikeWFC.Extensions;
+using RoguelikeWFC.Tiles;
 
 namespace RoguelikeWFC.WFC;
 
 public class WorldGenerator
 {
     private readonly WaveMap _waveMap;
-    private Wave wave => _waveMap.wave;
     private int width => _waveMap.width;
     private int height => _waveMap.height;
-    
     private WorldMap? _worldMapIntance;
-    public bool updateMapInstance { get; set; } = true;
+    private bool _updateMapInstance = true;
+    
+    public bool allCollapsed => _waveMap.AllCollapsed();
 
     public WorldMap? worldMap
     {
         get
         {
-            if(!wave.AllCollapsed() || !updateMapInstance)
+            if(!_waveMap.AllCollapsed() || !_updateMapInstance)
                 return null;
         
             if(_worldMapIntance is not null)
@@ -27,8 +28,8 @@ public class WorldGenerator
             {
                 for (int col = 0; col < width; col++)
                 {
-                    WavePossition wavePossition = wave.wave[row, col];
-                    int tileId = wavePossition.entropy[0];
+                    WavePossition wavePossition = _waveMap.GetPossitionAt(new(row, col));
+                    int tileId = wavePossition.Entropy[0];
                     MapTile tile = _waveMap.GetTileById(tileId);
             
                     mapTiles[row, col] = tile;
@@ -36,45 +37,36 @@ public class WorldGenerator
             }
         
             _worldMapIntance = new(width, height, mapTiles);
+            _updateMapInstance = false;
             return _worldMapIntance;
         }
-    }
-
-    public WorldGenerator(WaveMap waveMap)
-    {
-        _waveMap = waveMap;
-        if(!_waveMap.initialized)
-            _waveMap.Init();
     }
     
     public WorldGenerator(int width, int height, TileSet tileSet)
     {
         _waveMap = new(width, height, tileSet);
-        if(!_waveMap.initialized)
-            _waveMap.Init();
     }
     
     public void Wfc()
     {
-        if(!_waveMap.initialized)
-            return;
-        
-        while (!wave.AllCollapsed())
+        while (!_waveMap.AllCollapsed())
             InterateWfcOnce();
     }
     public void InterateWfcOnce()
     {
-        if(!_waveMap.initialized)
-            return;
-        
-        WavePossition possition = _waveMap.GetSmallerEntropyPossition();
-        byte tileId = _waveMap.GetRandomTileFromPossition(possition);
-        possition.entropy = new[] { tileId };
-
-        do
+        if(_waveMap.HasOnlyConflicts())
         {
-            PropagateState();
-        } while (UnpropagateNonCollapsed());
+            do
+            {
+                PropagateState();
+            } while (UnpropagateNonCollapsed());
+        }
+        
+        WavePossitionPoint possitionPoint = _waveMap.GetSmallerEntropyPossition();
+        byte tileId = _waveMap.GetRandomTileFromPossition(possitionPoint);
+        _waveMap.UpdateEntropyAt(possitionPoint, new[] { tileId });
+
+        PropagateState();
     }
     
     private void PropagateState()
@@ -83,56 +75,55 @@ public class WorldGenerator
         {
             for (int col = 0; col < width; col++)
             {
-                WavePossition possition = wave.wave[row, col];
+                WavePossitionPoint possitionPoint = new(row, col);
+                WavePossition possition = _waveMap.GetPossitionAt(possitionPoint);
                 if(!possition.collapsed)
                     continue;
                 
-                byte tileId = possition.entropy[0];
-                TileSocket socketMapTile = _waveMap.GetTileById(tileId)!.tileSocket;
+                byte tileId = possition.Entropy[0];
+                TileSocket socketMapTile = _waveMap.GetTileById(tileId).tileSocket;
                 
-                int top = row - 1;
-                int right = col + 1;
-                int bottom = row + 1;
-                int left = col - 1;
+                int topRaw = row - 1;
+                int rightRaw = col + 1;
+                int bottomRaw = row + 1;
+                int leftRaw = col - 1;
                 
-                List<byte> currentEntropy;
-                List<byte> newEntropy;
-                IEnumerable<byte> enumerable;
-                if(left >= 0 && left < width)
+                WavePossitionPoint top = new(topRaw, col);
+                WavePossitionPoint right = new(row, rightRaw);
+                WavePossitionPoint bottom = new(bottomRaw, col);
+                WavePossitionPoint left = new(row, leftRaw);
+                
+                if(leftRaw >= 0 && leftRaw < width)
                 {
-                    WavePossition leftPossition = wave.wave[row, left];
-                    currentEntropy = leftPossition.entropy.ToList();
-                    newEntropy = socketMapTile.fitLeft.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
-                    leftPossition.entropy = enumerable.ToArray();
+                    WavePossition leftPossition = _waveMap.GetPossitionAt(left);
+                    byte[] newEntropyLeft = leftPossition.Entropy
+                        .Intersect(socketMapTile.fitLeft);
+                    _waveMap.UpdateEntropyAt(left, newEntropyLeft);
                 }
 
-                if(right >= 0 && right < width)
+                if(rightRaw >= 0 && rightRaw < width)
                 {
-                    WavePossition rightPossition = wave.wave[row, right];
-                    currentEntropy = rightPossition.entropy.ToList();
-                    newEntropy = socketMapTile.fitRight.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
-                    rightPossition.entropy = enumerable.ToArray();
+                    WavePossition rightPossition = _waveMap.GetPossitionAt(right);
+                    byte[] newEntropyRight = rightPossition.Entropy
+                        .Intersect(socketMapTile.fitRight);
+                    _waveMap.UpdateEntropyAt(right, newEntropyRight);
                 }
 
-                if(top >= 0 && top < height)
+                if(topRaw >= 0 && topRaw < height)
                 {
-                    WavePossition topPossition = wave.wave[top, col];
-                    currentEntropy = topPossition.entropy.ToList();
-                    newEntropy = socketMapTile.fitTop.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
-                    topPossition.entropy = enumerable.ToArray();   
+                    WavePossition topPossition = _waveMap.GetPossitionAt(top);
+                    byte[] newEntropyTop = topPossition.Entropy
+                        .Intersect(socketMapTile.fitTop);
+                    _waveMap.UpdateEntropyAt(top, newEntropyTop);
                 }
 
                 // ReSharper disable once InvertIf
-                if(bottom >= 0 && bottom < height)
+                if(bottomRaw >= 0 && bottomRaw < height)
                 {
-                    WavePossition bottomPossition = wave.wave[bottom, col];
-                    currentEntropy = bottomPossition.entropy.ToList();
-                    newEntropy = socketMapTile.fitBottom.ToList();
-                    enumerable = currentEntropy.Intersect(newEntropy);
-                    bottomPossition.entropy = enumerable.ToArray();
+                    WavePossition bottomPossition = _waveMap.GetPossitionAt(bottom);
+                    byte[] newEntropyBottom = bottomPossition.Entropy
+                        .Intersect(socketMapTile.fitBottom);
+                    _waveMap.UpdateEntropyAt(bottom, newEntropyBottom);
                 }
             }
         }
@@ -144,37 +135,39 @@ public class WorldGenerator
         {
             for (int col = 0; col < width; col++)
             {
-                WavePossition possition = wave.wave[row, col];
-                if(possition.entropy.Any())
+                WavePossitionPoint possitionPoint = new(row, col);
+                WavePossition possition = _waveMap.GetPossitionAt(possitionPoint);
+                if(!possition.hasConflict)
                     continue;
                 
-                possition.entropy = _waveMap.ValidInitialTiles();
+                _waveMap.UpdateEntropyAt(possitionPoint, _waveMap.ValidInitialTiles());
                 
-                int top = row - 1;
-                int right = col + 1;
-                int bottom = row + 1;
-                int left = col - 1;
+                int topRaw = row - 1;
+                int rightRaw = col + 1;
+                int bottomRaw = row + 1;
+                int leftRaw = col - 1;
                 
-                if(left >= 0 && left < width)
+                WavePossitionPoint top = new(row - 1, col);
+                WavePossitionPoint right = new(row, col + 1);
+                WavePossitionPoint bottom = new(row + 1, col);
+                WavePossitionPoint left = new(row, col - 1);
+                
+                if(leftRaw >= 0 && leftRaw < width)
                 {
-                    WavePossition leftPossition = wave.wave[row, left];
-                    leftPossition.entropy = _waveMap.ValidInitialTiles();
+                    _waveMap.UpdateEntropyAt(left, _waveMap.ValidInitialTiles());
                 }
-                if(right >= 0 && right < width)
+                if(rightRaw >= 0 && rightRaw < width)
                 {
-                    WavePossition rightPossition = wave.wave[row, right];
-                    rightPossition.entropy = _waveMap.ValidInitialTiles();
+                    _waveMap.UpdateEntropyAt(right, _waveMap.ValidInitialTiles());
                 }
-                if(top >= 0 && top < height)
+                if(topRaw >= 0 && topRaw < height)
                 {
-                    WavePossition topPossition = wave.wave[top, col];
-                    topPossition.entropy = _waveMap.ValidInitialTiles();   
+                    _waveMap.UpdateEntropyAt(top, _waveMap.ValidInitialTiles());
                 }
                 // ReSharper disable once InvertIf
-                if(bottom >= 0 && bottom < height)
+                if(bottomRaw >= 0 && bottomRaw < height)
                 {
-                    WavePossition bottomPossition = wave.wave[bottom, col];
-                    bottomPossition.entropy = _waveMap.ValidInitialTiles();
+                    _waveMap.UpdateEntropyAt(bottom, _waveMap.ValidInitialTiles());
                 }
                 
                 return true;
@@ -186,8 +179,10 @@ public class WorldGenerator
     
     public MapTile GetTileAtPossition(int rowIndex, int columnIndex) =>
         _waveMap.GetTileAtPossition(rowIndex, columnIndex);
-    public bool AllCollapsed() => 
-        wave.AllCollapsed();
     
-    public void ResetMap() => _waveMap.Init();
+    public void ResetMap()
+    {
+        _waveMap.Reset();
+        _updateMapInstance = true;
+    }
 }
