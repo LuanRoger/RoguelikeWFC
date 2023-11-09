@@ -6,18 +6,11 @@ public class Wave
     public int height { get; }
     public WavePossition[,] wave { get; }
 
-    public Wave(int width, int height)
+    public Wave(int width, int height, WavePossition[,] wave)
     {
         this.width = width;
         this.height = height;
-        wave = new WavePossition[height, width];
-        for (int row = 0; row < height; row++)
-        {
-            for (int col = 0; col < width; col++)
-            {
-                wave[row, col] = new(Array.Empty<byte>());
-            }
-        }
+        this.wave = wave;
     }
     
     public bool AllCollapsed()
@@ -29,5 +22,10 @@ public class Wave
         }
 
         return true;
+    }
+    
+    public void UpdateEntropyAt(WavePossitionPoint point, byte[] newEntropy)
+    {
+        wave[point.row, point.column] = new(newEntropy);
     }
 }

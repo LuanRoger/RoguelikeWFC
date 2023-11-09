@@ -1,12 +1,16 @@
 ﻿namespace RoguelikeWFC.WFC;
 
-public class WavePossition
+public struct WavePossition
 {
-    public byte[] entropy { get; set; }
-    public bool collapsed => entropy.Length == 1;
+    public readonly byte[] Entropy;
+    public bool collapsed => Entropy.Length == 1;
+    public bool hasConflict => !Entropy.Any();
 
     public WavePossition(byte[] entropy)
     {
-        this.entropy = entropy;
+        Entropy = entropy;
     }
+    
+    public static explicit operator WavePossition(byte[] entropy) => 
+        new(entropy);
 }

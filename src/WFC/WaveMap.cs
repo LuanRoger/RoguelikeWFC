@@ -8,51 +8,84 @@ public class WaveMap
     public int height { get; }
     private readonly TileSet _tileSet;
     private IEnumerable<MapTile> tiles => _tileSet.Tiles;
-    public Wave wave { get; }
+    private Wave wave { get; set; }
     private readonly MapTile _nullTile = new NullTile();
-    
-    public bool initialized { get; private set; }
 
     public WaveMap(int width, int height, TileSet tileSet)
     {
         this.width = width;
         this.height = height;
-        wave = new(width, height);
         _tileSet = tileSet;
+        
+        var wavePossitions = InitializeWavePossitions();
+        wave = new(width, height, wavePossitions);
     }
     
-    public void Init()
+    private WavePossition[,] InitializeWavePossitions()
     {
-        foreach (WavePossition wavePossition in wave.wave)
-            wavePossition.entropy = ValidInitialTiles();
-        initialized = true;
+        var wavePossitions = new WavePossition[height, width];
+        for (int row = 0; row < height; row++)
+        {
+            for (int col = 0; col < width; col++)
+                wavePossitions[row, col] = new(ValidInitialTiles());
+        }
+        
+        return wavePossitions;
     }
     
     public byte[] ValidInitialTiles() => 
         _tileSet.ValidInitialTiles();
     
-    public WavePossition GetSmallerEntropyPossition()
+    public WavePossitionPoint GetSmallerEntropyPossition(bool includeConflicts = false)
     {
-        WavePossition smallerEntropy = wave.wave[0, 0];
+        int smallerEntropyRow = 0;
+        int smallerEntropyCol = 0;
         int smallerEntropyLength = int.MaxValue;
-        foreach (WavePossition wavePossition in wave.wave)
+        for (int row = 0; row < height; row++)
         {
-            if (wavePossition.collapsed ||
-                wavePossition.entropy.Length >= smallerEntropyLength) 
-                continue;
-            
-            smallerEntropy = wavePossition;
-            smallerEntropyLength = wavePossition.entropy.Length;
+            for (int col = 0; col < width; col++)
+            {
+                WavePossition wavePossition = wave.wave[row, col];
+                
+                if (wavePossition.collapsed ||
+                    !includeConflicts && wavePossition.hasConflict ||
+                    wavePossition.Entropy.Length >= smallerEntropyLength) 
+                    continue;
+                
+                smallerEntropyLength = wavePossition.Entropy.Length;
+                smallerEntropyRow = row;
+                smallerEntropyCol = col;
+            }
         }
 
-        return smallerEntropy;
+        return new(smallerEntropyRow, smallerEntropyCol);
+    }
+    
+    public WavePossition GetPossitionAt(WavePossitionPoint point) =>
+        wave.wave[point.row, point.column];
+    public void UpdateEntropyAt(WavePossitionPoint possitionPoint, byte[] newEntropy) =>
+        wave.UpdateEntropyAt(possitionPoint, newEntropy);
+    public bool AllCollapsed() =>
+        wave.AllCollapsed();
+    
+    public bool HasOnlyConflicts()
+    {
+        foreach (WavePossition wavePossition in wave.wave)
+        {
+            if (wavePossition is { collapsed: false, hasConflict: false })
+                return false;
+        }
+
+        return true;
     }
 
-    public byte GetRandomTileFromPossition(WavePossition possition)
+    public byte GetRandomTileFromPossition(WavePossitionPoint possition)
     {
         Random rng = new();
-        int tileIndex = rng.Next(0, possition.entropy.Length);
-        return possition.entropy[tileIndex];
+        WavePossition wavePossition = GetPossitionAt(possition);
+        
+        int tileIndex = rng.Next(0, wavePossition.Entropy.Length);
+        return wavePossition.Entropy[tileIndex];
     }
     
     public MapTile GetTileById(int id)
@@ -69,10 +102,18 @@ public class WaveMap
     public MapTile GetTileAtPossition(int rowIndex, int columnIndex)
     {
         WavePossition possition = wave.wave[rowIndex, columnIndex];
+        if(possition.hasConflict)
+            return _nullTile;
         if(!possition.collapsed)
-            return new TextTile(possition.entropy.Length.ToString()[0]);
+            return new TextTile(possition.Entropy.Length.ToString()[0]);
         
-        int tileId = possition.entropy[0];
+        int tileId = possition.Entropy[0];
         return GetTileById(tileId);
+    }
+    
+    public void Reset()
+    {
+        var wavePossitions = InitializeWavePossitions();
+        wave = new(width, height, wavePossitions);
     }
 }
