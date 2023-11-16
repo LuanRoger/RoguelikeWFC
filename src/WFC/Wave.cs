@@ -1,6 +1,6 @@
 ﻿namespace RoguelikeWFC.WFC;
 
-public class Wave
+public readonly struct Wave
 {
     public int width { get; }
     public int height { get; }

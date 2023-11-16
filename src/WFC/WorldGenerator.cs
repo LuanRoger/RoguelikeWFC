@@ -42,9 +42,9 @@ public class WorldGenerator
         }
     }
     
-    public WorldGenerator(int width, int height, TileSet tileSet)
+    public WorldGenerator(int width, int height, TileAtlas tileAtlas)
     {
-        _waveMap = new(width, height, tileSet);
+        _waveMap = new(width, height, tileAtlas);
     }
     
     public void Wfc()

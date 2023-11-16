@@ -18,7 +18,7 @@ internal class RootScreen : ScreenObject
     
     public RootScreen()
     {
-        worldGenerator = new(worldWidth, _height, FlorestTiles.Instance);
+        worldGenerator = new(worldWidth, _height, PlainsTiles.Instance);
         _world = new(worldWidth, _height);
         menu = new(30, _height, 
             "Controls", new(_world.AbsolutePosition.X + _world.Width + 2, 1),

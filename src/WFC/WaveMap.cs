@@ -6,16 +6,16 @@ public class WaveMap
 {
     public int width { get; }
     public int height { get; }
-    private readonly TileSet _tileSet;
-    private IEnumerable<MapTile> tiles => _tileSet.Tiles;
+    private readonly TileAtlas _tileAtlas;
+    private IEnumerable<MapTile> tiles => _tileAtlas.Tiles;
     private Wave wave { get; set; }
     private readonly MapTile _nullTile = new NullTile();
 
-    public WaveMap(int width, int height, TileSet tileSet)
+    public WaveMap(int width, int height, TileAtlas tileAtlas)
     {
         this.width = width;
         this.height = height;
-        _tileSet = tileSet;
+        _tileAtlas = tileAtlas;
         
         var wavePossitions = InitializeWavePossitions();
         wave = new(width, height, wavePossitions);
@@ -34,7 +34,7 @@ public class WaveMap
     }
     
     public byte[] ValidInitialTiles() => 
-        _tileSet.ValidInitialTiles();
+        _tileAtlas.ValidInitialTiles();
     
     public WavePossitionPoint GetSmallerEntropyPossition(bool includeConflicts = false)
     {
