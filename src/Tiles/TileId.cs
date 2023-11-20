@@ -24,4 +24,5 @@ public static class TileIDs
     public static readonly TileId Sand = new(6);
     public static readonly TileId Mountain = new(8);
     public static readonly TileId MountainPeek = new(9);
+    public static readonly TileId Dirt = new(10);
 }

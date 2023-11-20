@@ -92,7 +92,7 @@ public class WaveMap
     {
         foreach (MapTile tile in tiles)
         {
-            if(tile.id == id) 
+            if(tile.Id == id) 
                 return tile;
         }
         

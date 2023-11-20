@@ -12,6 +12,6 @@ public abstract class TileAtlas
     }
     
     public byte[] ValidInitialTiles() => 
-        Tiles.Select(tile => tile.id)
+        Tiles.Select(tile => tile.Id)
             .ToArray();
 }
