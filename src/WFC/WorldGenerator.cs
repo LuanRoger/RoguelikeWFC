@@ -31,7 +31,6 @@ public class WorldGenerator
                     WavePossition wavePossition = _waveMap.GetPossitionAt(new(row, col));
                     int tileId = wavePossition.Entropy[0];
                     MapTile tile = _waveMap.GetTileById(tileId);
-                    tile.ResetSprite();
             
                     mapTiles[row, col] = tile;
                 }

@@ -57,7 +57,7 @@ internal class RootScreen : ScreenObject
             for (int col = 0; col < worldWidth; col++)
             {
                 MapTile tile = worldGenerator.GetTileAtPossition(row, col);
-                _world.SetGlyph(col, row, tile.sprite, tile.Color);
+                _world.SetGlyph(col, row, tile.GetSprite(), tile.Color);
             }
         }
     }
@@ -70,7 +70,7 @@ internal class RootScreen : ScreenObject
             for(int col = 0; col < worldWidth; col++)
             {
                 MapTile tile = worldMap.tiles[row, col];
-                _world.SetGlyph(col, row, tile.sprite, tile.Color);
+                _world.SetGlyph(col, row, tile.GetSprite(true), tile.Color);
             }
         }
     }

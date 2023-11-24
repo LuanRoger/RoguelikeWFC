@@ -91,7 +91,7 @@ public class SandTile : MapTile
 
 public class DirtTile : MapTile
 {
-    public DirtTile() : base(TileIDs.Dirt, 249, Color.AnsiYellow, 
+    public DirtTile() : base(TileIDs.Dirt, 249, Color.SaddleBrown, 
         new()
         {
             fitTop = new byte[] {TileIDs.Dirt, TileIDs.Grass },

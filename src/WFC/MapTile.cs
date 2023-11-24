@@ -10,26 +10,7 @@ public abstract class MapTile
     public readonly Color Color;
     public readonly TileSocket TileSocket;
     
-    private ushort? _instanceSprite;
     public bool hasSpriteVariants => Glyph.Length > 1;
-    public ushort sprite
-    {
-        get
-        {
-            if(_instanceSprite is not null)
-                return _instanceSprite.Value;
-            if(!hasSpriteVariants)
-            {
-                _instanceSprite = Glyph[0];
-                return _instanceSprite.Value;
-            }
-            
-            Random random = new();
-            int randomSpritePicker = random.Next(Glyph.Length);
-            _instanceSprite = Glyph[randomSpritePicker];
-            return _instanceSprite.Value;
-        }
-    }
 
     protected MapTile(TileId id, ushort glyph, Color color, TileSocket tileSocket)
     {
@@ -53,8 +34,13 @@ public abstract class MapTile
         TileSocket = tileSocket;
     }
     
-    public void ResetSprite()
+    public ushort GetSprite(bool variant = false)
     {
-        _instanceSprite = null;
+        if(!hasSpriteVariants || !variant)
+            return Glyph[0];
+            
+        Random random = new();
+        int randomSpritePicker = random.Next(Glyph.Length);
+        return Glyph[randomSpritePicker];
     }
 }
