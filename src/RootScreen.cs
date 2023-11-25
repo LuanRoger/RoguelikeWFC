@@ -1,4 +1,6 @@
 ﻿using RoguelikeWFC.Components;
+using RoguelikeWFC.Components.Models;
+using RoguelikeWFC.Enums;
 using RoguelikeWFC.Tiles;
 using RoguelikeWFC.WFC;
 
@@ -13,31 +15,43 @@ internal class RootScreen : ScreenObject
     private readonly int _height = GameSettings.GAME_HEIGHT;
     
     private int worldWidth => _width - 35;
-    private WorldGenerationMenu menu;
+    private WorldGenerationMenu _menu;
     private bool _generationReady;
+    private ExecutionMode _executionMode;
     
     public RootScreen()
     {
         worldGenerator = new(worldWidth, _height, PlainsTiles.Instance);
         _world = new(worldWidth, _height);
-        menu = new(30, _height, 
+        _menu = new(30, _height, 
             "Controls", new(_world.AbsolutePosition.X + _world.Width + 2, 1),
-            onResetButtonClick: () =>
-            {
-                worldGenerator.ResetMap();
-                _generationReady = false;
-            });
+            new(), onResetButtonClick: OnResetButtonClick);
         
         Children.Add(_world);
-        Children.Add(menu);
+        Children.Add(_menu);
     }
-    
+
     public override void Update(TimeSpan delta)
     {
         base.Update(delta);
         if(_generationReady)
             return;
-        
+
+        switch (_executionMode)
+        {
+            case ExecutionMode.Interactive:
+                InterateInteractive();
+                break;
+            case ExecutionMode.Instant:
+                InterateInstant();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    
+    private void InterateInteractive()
+    {
         if(!worldGenerator.allCollapsed)
         {
             worldGenerator.InterateWfcOnce();
@@ -48,6 +62,14 @@ internal class RootScreen : ScreenObject
             DrawnWorldMap();
             _generationReady = true;
         }
+        UpdateInformations();
+    }
+    
+    private void InterateInstant()
+    {
+        worldGenerator.Wfc();
+        DrawnWorldMap();
+        _generationReady = true;
     }
     
     private void DrawnMap()
@@ -73,5 +95,17 @@ internal class RootScreen : ScreenObject
                 _world.SetGlyph(col, row, tile.GetSprite(true), tile.Color);
             }
         }
+    }
+    private void UpdateInformations()
+    {
+        GenerationInformation mapInformation = worldGenerator.DumpGenerationInformation();
+        _menu.currentInformation = mapInformation;
+    }
+    
+    private void OnResetButtonClick()
+    {
+        worldGenerator.ResetMap();
+        _executionMode = _menu.executionMode;
+        _generationReady = false;
     }
 }

@@ -1,4 +1,5 @@
-﻿using RoguelikeWFC.Extensions;
+﻿using RoguelikeWFC.Components.Models;
+using RoguelikeWFC.Extensions;
 using RoguelikeWFC.Tiles;
 
 namespace RoguelikeWFC.WFC;
@@ -179,10 +180,21 @@ public class WorldGenerator
     
     public MapTile GetTileAtPossition(int rowIndex, int columnIndex) =>
         _waveMap.GetTileAtPossition(rowIndex, columnIndex);
+     
+    public GenerationInformation DumpGenerationInformation() =>
+        new()
+        {
+            collapsedTiles = _waveMap.GetCountOfCollapsedTiles(),
+            conflictTiles = _waveMap.GetCountOfConflicts(),
+            leftTilesToCollapse = _waveMap.waveLength - _waveMap.GetCountOfCollapsedTiles(),
+            totalTiles = _waveMap.waveLength,
+            allCollapsed = _waveMap.AllCollapsed()
+        };
     
     public void ResetMap()
     {
         _waveMap.Reset();
+        _worldMapIntance = null;
         _updateMapInstance = true;
     }
 }

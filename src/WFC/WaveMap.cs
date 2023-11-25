@@ -9,6 +9,7 @@ public class WaveMap
     private readonly TileAtlas _tileAtlas;
     private IEnumerable<MapTile> tiles => _tileAtlas.Tiles;
     private Wave wave { get; set; }
+    public int waveLength => wave.wave.Length;
     private readonly MapTile _nullTile = new NullTile();
 
     public WaveMap(int width, int height, TileAtlas tileAtlas)
@@ -68,6 +69,18 @@ public class WaveMap
     public bool AllCollapsed() =>
         wave.AllCollapsed();
     
+    public int GetCountOfCollapsedTiles()
+    {
+        int count = 0;
+        foreach (WavePossition wavePossition in wave.wave)
+        {
+            if(wavePossition is { collapsed: true, hasConflict: false })
+                count++;
+        }
+        
+        return count;
+    }
+    
     public bool HasOnlyConflicts()
     {
         foreach (WavePossition wavePossition in wave.wave)
@@ -77,6 +90,17 @@ public class WaveMap
         }
 
         return true;
+    }
+    public int GetCountOfConflicts()
+    {
+        int count = 0;
+        foreach (WavePossition wavePossition in wave.wave)
+        {
+            if(wavePossition.hasConflict)
+                count++;
+        }
+        
+        return count;
     }
 
     public byte GetRandomTileFromPossition(WavePossitionPoint possition)
