@@ -18,11 +18,11 @@ public class WorldGenerator
     {
         get
         {
-            if(!_waveMap.AllCollapsed() || !_updateMapInstance)
-                return null;
-        
             if(_worldMapIntance is not null)
                 return _worldMapIntance;
+            
+            if(!_waveMap.AllCollapsed() || !_updateMapInstance)
+                return null;
         
             var mapTiles = new MapTile[height, width];
             for (int row = 0; row < height; row++)
@@ -37,7 +37,7 @@ public class WorldGenerator
                 }
             }
         
-            _worldMapIntance = new(width, height, mapTiles);
+            _worldMapIntance = new(width, height, mapTiles, _waveMap.AtalsId);
             _updateMapInstance = false;
             return _worldMapIntance;
         }

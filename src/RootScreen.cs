@@ -17,6 +17,7 @@ internal class RootScreen : ScreenObject
     
     private int worldWidth => _width - 35;
     private WorldGenerationMenu _menu;
+    private SaveLoadMapControlersMenu _saveLoadMapControlersMenu;
     private bool _generationReady;
     private ExecutionMode _executionMode;
     private SelectedMap _selectedMap;
@@ -30,9 +31,11 @@ internal class RootScreen : ScreenObject
         _menu = new(30, _height, 
             "Controls", new(_world.AbsolutePosition.X + _world.Width + 2, 1),
             new(), onResetButtonClick: OnResetButtonClick);
+        _saveLoadMapControlersMenu = new(_width, _height);
         
         Children.Add(_world);
         Children.Add(_menu);
+        Children.Add(_saveLoadMapControlersMenu);
     }
 
     public override void Update(TimeSpan delta)
@@ -70,6 +73,7 @@ internal class RootScreen : ScreenObject
         else
         {
             DrawnWorldMap();
+            _saveLoadMapControlersMenu.MadeMapReadyToSave(worldGenerator.worldMap!);
             _generationReady = true;
         }
         UpdateInformations();
@@ -78,8 +82,10 @@ internal class RootScreen : ScreenObject
     private void InterateInstant()
     {
         worldGenerator.Wfc();
-        DrawnWorldMap();
         _generationReady = true;
+        
+        _saveLoadMapControlersMenu.MadeMapReadyToSave(worldGenerator.worldMap!);
+        DrawnWorldMap();
         UpdateInformations();
     }
     
@@ -129,6 +135,7 @@ internal class RootScreen : ScreenObject
         _executionMode = _menu.executionMode;
         _selectedMap = _menu.selectedMap;
         _generationTime.Reset();
+        _saveLoadMapControlersMenu.Reset();
         _generationReady = false;
     }
 }

@@ -7,6 +7,7 @@ public class WaveMap
     public int width { get; }
     public int height { get; }
     private readonly TileAtlas _tileAtlas;
+    public int AtalsId => _tileAtlas.AtlasId;
     private IEnumerable<MapTile> tiles => _tileAtlas.Tiles;
     private Wave wave { get; set; }
     public int waveLength => wave.wave.Length;

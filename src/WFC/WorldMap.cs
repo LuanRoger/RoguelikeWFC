@@ -6,6 +6,7 @@ public class WorldMap
 {
     public readonly int width;
     public readonly int height;
+    public readonly int AtlasId;
     public MapTile[,] tiles { get; }
     private readonly MapTile _nullTile = new NullTile();
 
@@ -17,11 +18,12 @@ public class WorldMap
         InitializeEmptyMap();
     }
     
-    public WorldMap(int width, int height, MapTile[,] tiles)
+    public WorldMap(int width, int height, MapTile[,] tiles, int atlasId)
     {
         this.width = width;
         this.height = height;
         this.tiles = tiles;
+        AtlasId = atlasId;
     }
     
     private void InitializeEmptyMap()
