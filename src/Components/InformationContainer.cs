@@ -5,10 +5,10 @@ namespace RoguelikeWFC.Components;
 public class InformationContainer : ScreenObject
 {
     private readonly Console container;
-    private readonly InformationControllers _informationControllers;
+    private readonly InformationControlers _informationControlers;
     
     public InformationContainer(int width, int height, string title, Point possition,
-        GenerationInformation information)
+        ControlsInformationCompound information)
     {
         container = new(width, height);
         container.Position = possition;
@@ -17,15 +17,15 @@ public class InformationContainer : ScreenObject
         
         container.Print(container.Width / 2 - title.Length / 2, 0, title);
         
-        _informationControllers = new(container.Width, container.Width - 1, new(0, 1),
+        _informationControlers = new(container.Width, container.Height - 1, new(0, 1),
             information);
-        container.Children.Add(_informationControllers);
+        container.Children.Add(_informationControlers);
         
         Children.Add(container);
     }
     
-    public void UpdateInformations(GenerationInformation newInformations)
+    public void UpdateInformations(ControlsInformationCompound newInformations)
     {
-        _informationControllers.UpdateInformations(newInformations);
+        _informationControlers.UpdateInformations(newInformations);
     }
 }

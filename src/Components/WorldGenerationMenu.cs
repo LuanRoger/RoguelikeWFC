@@ -8,15 +8,15 @@ public class WorldGenerationMenu : ScreenObject
 {
     private readonly string _title;
     private readonly Console _container;
-    private readonly MapController _controllerMenu;
+    private readonly MapControler _controlerMenu;
     private readonly InformationContainer _informationContainer;
-    private GenerationInformation _generationInformation;
-    public GenerationInformation currentInformation
+    private ControlsInformationCompound _controlsControlInformationCompound;
+    public ControlsInformationCompound currentControlInformation
     {
-        get => _generationInformation;
+        get => _controlsControlInformationCompound;
         set
         {
-            _generationInformation = value;
+            _controlsControlInformationCompound = value;
             _informationContainer.UpdateInformations(value);
         }
     }
@@ -25,24 +25,24 @@ public class WorldGenerationMenu : ScreenObject
     public SelectedMap selectedMap { get; private set; }
 
     public WorldGenerationMenu(int width, int height, string title, Point possition,  
-        GenerationInformation generationInformation, Action? onResetButtonClick = null)
+        ControlsInformationCompound controlsControlInformationCompound, Action? onResetButtonClick = null)
     {
         _title = title;
         _container = new(width, height - 3);
         _container.Position = possition;
-        _generationInformation = generationInformation;
+        _controlsControlInformationCompound = controlsControlInformationCompound;
         
         _container.Clear();
         Border.CreateForSurface(_container, title);
         
-        _controllerMenu = new(_container.Width, 6, new(0, 1),
+        _controlerMenu = new(_container.Width, 6, new(0, 1),
             onResetButtonClick: onResetButtonClick);
-        _controllerMenu.OnExecutionModeChanged += mode => executionMode = mode;
-        _controllerMenu.OnSelectedMapChanged += map => selectedMap = map;
-        _container.Children.Add(_controllerMenu);
+        _controlerMenu.OnExecutionModeChanged += mode => executionMode = mode;
+        _controlerMenu.OnSelectedMapChanged += map => selectedMap = map;
+        _container.Children.Add(_controlerMenu);
         
-        _informationContainer = new(_container.Width, 8, "Information",
-            new(0, _controllerMenu.Height + 1), _generationInformation);
+        _informationContainer = new(_container.Width, 15, "Informations",
+            new(0, _controlerMenu.Height + 1), _controlsControlInformationCompound);
         _container.Children.Add(_informationContainer);
         
         Children.Add(_container);

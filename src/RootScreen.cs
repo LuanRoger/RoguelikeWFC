@@ -1,4 +1,5 @@
-﻿using RoguelikeWFC.Components;
+﻿using System.Diagnostics;
+using RoguelikeWFC.Components;
 using RoguelikeWFC.Components.Models;
 using RoguelikeWFC.Enums;
 using RoguelikeWFC.Tiles;
@@ -18,6 +19,9 @@ internal class RootScreen : ScreenObject
     private WorldGenerationMenu _menu;
     private bool _generationReady;
     private ExecutionMode _executionMode;
+    private SelectedMap _selectedMap;
+    
+    private readonly Stopwatch _generationTime = new();
     
     public RootScreen()
     {
@@ -35,8 +39,14 @@ internal class RootScreen : ScreenObject
     {
         base.Update(delta);
         if(_generationReady)
+        {
+            if(_generationTime.IsRunning)
+                _generationTime.Stop();
             return;
-
+        }
+        
+        if(!_generationTime.IsRunning)
+            _generationTime.Start();
         switch (_executionMode)
         {
             case ExecutionMode.Interactive:
@@ -70,6 +80,7 @@ internal class RootScreen : ScreenObject
         worldGenerator.Wfc();
         DrawnWorldMap();
         _generationReady = true;
+        UpdateInformations();
     }
     
     private void DrawnMap()
@@ -99,13 +110,25 @@ internal class RootScreen : ScreenObject
     private void UpdateInformations()
     {
         GenerationInformation mapInformation = worldGenerator.DumpGenerationInformation();
-        _menu.currentInformation = mapInformation;
+        ExecutionInformation executionInformation = new()
+        {
+            executionMode = _executionMode,
+            selectedMap = _selectedMap,
+            elapsedTime = _generationTime.Elapsed
+        };
+        _menu.currentControlInformation = new()
+        {
+            generationInformation = mapInformation,
+            executionInformation = executionInformation
+        };
     }
     
     private void OnResetButtonClick()
     {
         worldGenerator.ResetMap();
         _executionMode = _menu.executionMode;
+        _selectedMap = _menu.selectedMap;
+        _generationTime.Reset();
         _generationReady = false;
     }
 }

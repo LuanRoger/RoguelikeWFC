@@ -4,7 +4,7 @@ using SadConsole.UI.Controls;
 
 namespace RoguelikeWFC.Components;
 
-public class MapController : ControlsConsole
+public class MapControler : ControlsConsole
 {
     private readonly ButtonBase _resetButton;
     private readonly ListBox _environmentsListBox;
@@ -16,7 +16,7 @@ public class MapController : ControlsConsole
     public event ExecutionModeChangedEventHandler? OnExecutionModeChanged;
     public event SelectedMapChangedEventHandler? OnSelectedMapChanged;
     
-    public MapController(int width, int height, Point possition,
+    public MapControler(int width, int height, Point possition,
         Action? onResetButtonClick = null) : base(width, height)
     {
         Controls.ThemeColors = Colors.Default;
