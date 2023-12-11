@@ -1,4 +1,4 @@
-﻿using RoguelikeWFC.Enums;
+﻿using RoguelikeWFC.Components.Enums;
 
 namespace RoguelikeWFC.Components.Models;
 

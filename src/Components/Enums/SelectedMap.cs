@@ -1,4 +1,4 @@
-﻿namespace RoguelikeWFC.Enums;
+﻿namespace RoguelikeWFC.Components.Enums;
 
 public enum SelectedMap
 {

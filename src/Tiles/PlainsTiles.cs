@@ -124,5 +124,5 @@ public class PlainsTiles : TileAtlas
         new DeepRiverTile(),
         new SandTile(),
         new DirtTile()
-        }) { }
+        }, AtlasIDs.Plains) { }
 }

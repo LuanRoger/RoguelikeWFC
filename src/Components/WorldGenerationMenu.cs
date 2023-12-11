@@ -1,5 +1,5 @@
-﻿using RoguelikeWFC.Components.Models;
-using RoguelikeWFC.Enums;
+﻿using RoguelikeWFC.Components.Enums;
+using RoguelikeWFC.Components.Models;
 using SadConsole.UI;
 
 namespace RoguelikeWFC.Components;
@@ -11,6 +11,7 @@ public class WorldGenerationMenu : ScreenObject
     private readonly MapControler _controlerMenu;
     private readonly InformationContainer _informationContainer;
     private ControlsInformationCompound _controlsControlInformationCompound;
+    
     public ControlsInformationCompound currentControlInformation
     {
         get => _controlsControlInformationCompound;
@@ -28,11 +29,12 @@ public class WorldGenerationMenu : ScreenObject
         ControlsInformationCompound controlsControlInformationCompound, Action? onResetButtonClick = null)
     {
         _title = title;
-        _container = new(width, height - 3);
-        _container.Position = possition;
+        _container = new(width, height - 3)
+        {
+            Position = possition
+        };
         _controlsControlInformationCompound = controlsControlInformationCompound;
         
-        _container.Clear();
         Border.CreateForSurface(_container, title);
         
         _controlerMenu = new(_container.Width, 6, new(0, 1),
