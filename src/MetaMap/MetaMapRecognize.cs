@@ -6,13 +6,13 @@ using RoguelikeWFC.WFC;
 
 namespace RoguelikeWFC.MetaMap;
 
-public class MetaMapRecoginizer
+public class MetaMapRecognize
 {
     public const string META_MAP_FILE_EXTENSION = ".wmap";
     public const int META_MAP_VERSION = 1;
     private readonly SerializebleWorldMap _serializebleWorldMap;
 
-    public MetaMapRecoginizer(SerializebleWorldMap serializebleWorldMap)
+    public MetaMapRecognize(SerializebleWorldMap serializebleWorldMap)
     {
         _serializebleWorldMap = serializebleWorldMap;
     }

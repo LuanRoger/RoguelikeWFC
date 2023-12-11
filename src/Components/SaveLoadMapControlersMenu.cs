@@ -3,6 +3,7 @@ using RoguelikeWFC.MapIO.Models;
 using RoguelikeWFC.MetaMap;
 using RoguelikeWFC.WFC;
 using SadConsole.UI;
+using static SadConsole.UI.Window;
 
 namespace RoguelikeWFC.Components;
 
@@ -43,10 +44,14 @@ public class SaveLoadMapControlersMenu : ScreenObject
     {
         MapLoader mapLoader = new(filepath);
         SerializebleWorldMap? result = mapLoader.Load();
-        if(result is null) return;
+        if(result is null)
+        {
+            Message("Can't load map from file", "Ok");
+            return;
+        }
         
-        MetaMapRecoginizer metaMapRecoginizer = new(result);
-        WorldMap map = metaMapRecoginizer.Recognize();
+        MetaMapRecognize metaMapRecognize = new(result);
+        WorldMap map = metaMapRecognize.Recognize();
         OnLoadMap?.Invoke(map);
     }
     

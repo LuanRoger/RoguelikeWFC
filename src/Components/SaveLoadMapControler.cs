@@ -1,4 +1,5 @@
 ﻿using RoguelikeWFC.Components.Window;
+using RoguelikeWFC.MetaMap;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 
@@ -33,12 +34,11 @@ public class SaveLoadMapControler : ControlsConsole
     
     private void LoadButtonOnClick(object? sender, EventArgs e)
     {
-        SelectDirectoryPopup popup = new("Load map", ".wmap");
-        popup.skipFileExistCheck = true;
+        SelectDirectoryPopup popup = new("Load map", MetaMapRecognize.META_MAP_FILE_EXTENSION);
         popup.selectButtonText = "Load";
         popup.Closed += (_, _) =>
         {
-            if (!popup.DialogResult) return;
+            if (!popup.DialogResult || popup.selectedFile is null) return;
             
             OnLoadMap?.Invoke(popup.selectedFile);
         };
@@ -47,12 +47,12 @@ public class SaveLoadMapControler : ControlsConsole
 
     private void OnSaveButtonClick(object? sender, EventArgs e)
     {
-        SelectDirectoryPopup popup = new("Save map", ".wmap");
-        popup.skipFileExistCheck = true;
+        SelectDirectoryPopup popup = new("Save map", MetaMapRecognize.META_MAP_FILE_EXTENSION, 
+            skipFileExistCheck: true);
         popup.selectButtonText = "Save";
         popup.Closed += (_, _) =>
         {
-            if (!popup.DialogResult) return;
+            if (!popup.DialogResult || popup.selectedFile is null) return;
             
             OnSaveMap?.Invoke(popup.selectedFile);
         };

@@ -29,7 +29,7 @@ public class MapSaver : IDisposable, IAsyncDisposable
         }
         return new()
         {
-            version = MetaMapRecoginizer.META_MAP_VERSION,
+            version = MetaMapRecognize.META_MAP_VERSION,
             width = map.width,
             height = map.height,
             atlasId = map.AtlasId,
