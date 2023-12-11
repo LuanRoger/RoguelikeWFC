@@ -1,4 +1,6 @@
 ﻿using RoguelikeWFC.MapIO;
+using RoguelikeWFC.MapIO.Models;
+using RoguelikeWFC.MetaMap;
 using RoguelikeWFC.WFC;
 using SadConsole.UI;
 
@@ -23,6 +25,7 @@ public class SaveLoadMapControlersMenu : ScreenObject
         
         _saveLoadMapControler = new(8, 2);
         _saveLoadMapControler.OnSaveMap += SaveLoadMapControlerOnOnSaveMap;
+        _saveLoadMapControler.OnLoadMap += SaveLoadMapControlerOnOnLoadMap;
         _container.Children.Add(_saveLoadMapControler);
         
         Children.Add(_container);
@@ -34,6 +37,17 @@ public class SaveLoadMapControlersMenu : ScreenObject
         
         MapSaver mapSaver = new(possibleMapToSave, filepath);
         mapSaver.Save();
+    }
+    
+    private void SaveLoadMapControlerOnOnLoadMap(string filepath)
+    {
+        MapLoader mapLoader = new(filepath);
+        SerializebleWorldMap? result = mapLoader.Load();
+        if(result is null) return;
+        
+        MetaMapRecoginizer metaMapRecoginizer = new(result);
+        WorldMap map = metaMapRecoginizer.Recognize();
+        OnLoadMap?.Invoke(map);
     }
     
     public void MadeMapReadyToSave(WorldMap map)

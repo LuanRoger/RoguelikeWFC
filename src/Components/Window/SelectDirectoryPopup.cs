@@ -2,6 +2,9 @@
 
 namespace RoguelikeWFC.Components.Window;
 
+/// <summary>
+/// Popup window for selecting a directory and file name.
+/// </summary>
 public class SelectDirectoryPopup : SadConsole.UI.Window
 {
     private FileDirectoryListbox _directoryListBox;
@@ -109,6 +112,16 @@ public class SelectDirectoryPopup : SadConsole.UI.Window
         string extension = Path.GetExtension(selectedFile);
         if(string.IsNullOrWhiteSpace(extension))
             selectedFile += fileExtensionFilter;
+        
+        if(!skipFileExistCheck)
+        {
+            bool fileExist = File.Exists(selectedFile);
+            if(!fileExist)
+            {
+                selectedFile = string.Empty;
+                return;
+            }
+        }
 
         DialogResult = true;
         Hide();

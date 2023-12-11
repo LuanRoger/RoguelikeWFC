@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using RoguelikeWFC.Components;
+using RoguelikeWFC.Components.Enums;
 using RoguelikeWFC.Components.Models;
-using RoguelikeWFC.Enums;
 using RoguelikeWFC.Tiles;
 using RoguelikeWFC.WFC;
 
@@ -11,6 +11,7 @@ internal class RootScreen : ScreenObject
 {
     private ScreenSurface _world;
     private WorldGenerator worldGenerator { get; }
+    private WorldMap? worldMap { get; set; }
     
     private readonly int _width = GameSettings.GAME_WIDTH;
     private readonly int _height = GameSettings.GAME_HEIGHT;
@@ -31,7 +32,9 @@ internal class RootScreen : ScreenObject
         _menu = new(30, _height, 
             "Controls", new(_world.AbsolutePosition.X + _world.Width + 2, 1),
             new(), onResetButtonClick: OnResetButtonClick);
+        
         _saveLoadMapControlersMenu = new(_width, _height);
+        _saveLoadMapControlersMenu.OnLoadMap += LoadWorldMap;
         
         Children.Add(_world);
         Children.Add(_menu);
@@ -72,9 +75,10 @@ internal class RootScreen : ScreenObject
         }
         else
         {
-            DrawnWorldMap();
-            _saveLoadMapControlersMenu.MadeMapReadyToSave(worldGenerator.worldMap!);
             _generationReady = true;
+            worldMap = worldGenerator.worldMap!;
+            DrawnWorldMap();
+            _saveLoadMapControlersMenu.MadeMapReadyToSave(worldMap);
         }
         UpdateInformations();
     }
@@ -83,8 +87,9 @@ internal class RootScreen : ScreenObject
     {
         worldGenerator.Wfc();
         _generationReady = true;
+        worldMap = worldGenerator.worldMap!;
         
-        _saveLoadMapControlersMenu.MadeMapReadyToSave(worldGenerator.worldMap!);
+        _saveLoadMapControlersMenu.MadeMapReadyToSave(worldMap);
         DrawnWorldMap();
         UpdateInformations();
     }
@@ -101,15 +106,23 @@ internal class RootScreen : ScreenObject
         }
     }
     
+    private void LoadWorldMap(WorldMap map)
+    {
+        _generationReady = true;
+        worldMap = map;
+        _saveLoadMapControlersMenu.MadeMapReadyToSave(worldMap);
+        DrawnWorldMap();
+        UpdateInformations();
+    }
     private void DrawnWorldMap()
     {
-        WorldMap worldMap = worldGenerator.worldMap!;
-        for(int row = 0; row < _height; row++)
+        if(worldMap is null) return;
+        for(int col = 0; col < _height; col++)
         {
-            for(int col = 0; col < worldWidth; col++)
+            for(int row = 0; row < worldWidth; row++)
             {
-                MapTile tile = worldMap.tiles[row, col];
-                _world.SetGlyph(col, row, tile.GetSprite(true), tile.Color);
+                MapTile tile = worldMap.tiles[col, row];
+                _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color);
             }
         }
     }
