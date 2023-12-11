@@ -1,4 +1,4 @@
-﻿using RoguelikeWFC.Enums;
+﻿using RoguelikeWFC.Components.Enums;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 

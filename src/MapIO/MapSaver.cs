@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using RoguelikeWFC.MapIO.Models;
+using RoguelikeWFC.MetaMap;
 using RoguelikeWFC.WFC;
 
 namespace RoguelikeWFC.MapIO;
@@ -28,7 +29,7 @@ public class MapSaver : IDisposable, IAsyncDisposable
         }
         return new()
         {
-            version = MapSerializerConts.VERSION,
+            version = MetaMapRecoginizer.META_MAP_VERSION,
             width = map.width,
             height = map.height,
             atlasId = map.AtlasId,

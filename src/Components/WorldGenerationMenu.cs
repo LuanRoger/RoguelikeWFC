@@ -1,5 +1,5 @@
-﻿using RoguelikeWFC.Components.Models;
-using RoguelikeWFC.Enums;
+﻿using RoguelikeWFC.Components.Enums;
+using RoguelikeWFC.Components.Models;
 using SadConsole.UI;
 
 namespace RoguelikeWFC.Components;
