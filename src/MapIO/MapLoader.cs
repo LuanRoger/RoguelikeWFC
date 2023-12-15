@@ -4,17 +4,11 @@ using RoguelikeWFC.WFC;
 
 namespace RoguelikeWFC.MapIO;
 
-public class MapLoader
+public class MapLoader(string filePath)
 {
-    private XmlSerializer _serializer;
-    private FileStream _writer;
+    private XmlSerializer _serializer = new(typeof(SerializebleWorldMap));
+    private FileStream _writer = File.OpenRead(filePath);
 
-    public MapLoader(string filePath)
-    {
-        _serializer = new(typeof(SerializebleWorldMap));
-        _writer = File.OpenRead(filePath);
-    }
-    
     public SerializebleWorldMap? Load()
     {
         SerializebleWorldMap? map = _serializer.Deserialize(_writer) as SerializebleWorldMap;

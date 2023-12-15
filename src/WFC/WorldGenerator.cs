@@ -4,9 +4,9 @@ using RoguelikeWFC.Tiles;
 
 namespace RoguelikeWFC.WFC;
 
-public class WorldGenerator
+public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
 {
-    private readonly WaveMap _waveMap;
+    private readonly WaveMap _waveMap = new(width, height, tileAtlas);
     private int width => _waveMap.width;
     private int height => _waveMap.height;
     private WorldMap? _worldMapIntance;
@@ -42,12 +42,7 @@ public class WorldGenerator
             return _worldMapIntance;
         }
     }
-    
-    public WorldGenerator(int width, int height, TileAtlas tileAtlas)
-    {
-        _waveMap = new(width, height, tileAtlas);
-    }
-    
+
     public void Wfc()
     {
         while (!_waveMap.AllCollapsed())

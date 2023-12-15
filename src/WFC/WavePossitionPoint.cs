@@ -1,13 +1,7 @@
 ﻿namespace RoguelikeWFC.WFC;
 
-public struct WavePossitionPoint
+public struct WavePossitionPoint(int row, int column)
 {
-    public int row { get; }
-    public int column { get; }
-
-    public WavePossitionPoint(int row, int column)
-    {
-        this.row = row;
-        this.column = column;
-    }
+    public int row { get; } = row;
+    public int column { get; } = column;
 }

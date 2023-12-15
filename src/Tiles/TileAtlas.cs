@@ -2,17 +2,11 @@
 
 namespace RoguelikeWFC.Tiles;
 
-public abstract class TileAtlas
+public abstract class TileAtlas(MapTile[] tiles, int atlasId)
 {
-    public readonly int AtlasId;
-    public readonly MapTile[] Tiles;
+    public readonly int AtlasId = atlasId;
+    public readonly MapTile[] Tiles = tiles;
 
-    protected TileAtlas(MapTile[] tiles, int atlasId)
-    {
-        Tiles = tiles;
-        AtlasId = atlasId;
-    }
-    
     public byte[] ValidInitialTiles() => 
         Tiles.Select(tile => tile.Id)
             .ToArray();
