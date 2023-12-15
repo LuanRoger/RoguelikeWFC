@@ -26,6 +26,7 @@ public class MetaMapRecognize(SerializebleWorldMap serializebleWorldMap)
         serializebleWorldMap.atlasId switch
         {
             1 => PlainsTiles.Instance,
+            2 => DesertTiles.Instance,
             _ => throw new IncompatibleMapVersionException()
         };
     private MapTile[,] GetMapTiles(TileAtlas tileAtlas)

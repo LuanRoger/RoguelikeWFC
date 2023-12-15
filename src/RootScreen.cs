@@ -138,7 +138,10 @@ internal class RootScreen : ScreenObject
             for(int row = 0; row < worldWidth; row++)
             {
                 MapTile tile = worldMap.tiles[col, row];
-                _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color);
+                if(tile.Background.HasValue)
+                    _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color, tile.Background.Value);
+                else
+                    _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color);
             }
         }
     }
@@ -167,6 +170,7 @@ internal class RootScreen : ScreenObject
         _saveLoadMapControlersMenu.Reset();
         UpdateMapAtlas();
         worldGenerator.ResetMap();
+        _world.Clear();
         
         _generationReady = false;
     }
