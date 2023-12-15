@@ -114,6 +114,19 @@ internal class RootScreen : ScreenObject
         DrawnWorldMap();
         UpdateInformations();
     }
+
+    public void UpdateMapAtlas()
+    {
+        TileAtlas newAtlas = _selectedMap switch
+        {
+            SelectedMap.Plains => PlainsTiles.Instance,
+            SelectedMap.Desert => DesertTiles.Instance,
+            _ => throw new NotImplementedException()
+        };
+        
+        worldGenerator.ChangeAtlasInstance(newAtlas);
+    }
+    
     private void DrawnWorldMap()
     {
         if(worldMap is null) return;
@@ -144,11 +157,14 @@ internal class RootScreen : ScreenObject
     
     private void OnResetButtonClick()
     {
-        worldGenerator.ResetMap();
         _executionMode = _menu.executionMode;
         _selectedMap = _menu.selectedMap;
+        
         _generationTime.Reset();
         _saveLoadMapControlersMenu.Reset();
+        UpdateMapAtlas();
+        worldGenerator.ResetMap();
+        
         _generationReady = false;
     }
 }
