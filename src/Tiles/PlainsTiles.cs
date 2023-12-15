@@ -76,7 +76,18 @@ public class DirtTile() : MapTile(TileIDs.Dirt, 249, Color.SaddleBrown,
         fitLeft = new byte[] { TileIDs.Dirt, TileIDs.Grass }
     });
 
-public class PlainsTiles : TileAtlas
+public class PlainsTiles() : TileAtlas(
+    new MapTile[]
+    {
+        new GrassTile(),
+        new TreeTile(),
+        new MountainTile(),
+        new MountainPeekTile(),
+        new RiverTile(),
+        new DeepRiverTile(),
+        new SandTile(),
+        new DirtTile()
+    }, AtlasIDs.Plains)
 {
     private static PlainsTiles? _instance;
 
@@ -88,16 +99,4 @@ public class PlainsTiles : TileAtlas
             return _instance;
         }
     }
-
-    private PlainsTiles() : 
-        base(new MapTile[] {
-        new GrassTile(),
-        new TreeTile(),
-        new MountainTile(),
-        new MountainPeekTile(),
-        new RiverTile(),
-        new DeepRiverTile(),
-        new SandTile(),
-        new DirtTile()
-        }, AtlasIDs.Plains) { }
 }

@@ -20,9 +20,13 @@ public static class TileIDs
     public static readonly TileId Mountain = new(8);
     public static readonly TileId MountainPeek = new(9);
     public static readonly TileId Dirt = new(10);
+    public static readonly TileId DesertSand = new(11);
+    public static readonly TileId Rock = new(12);
+    public static readonly TileId Cactus = new(13);
 }
 
 public static class AtlasIDs
 {
     public static readonly TileId Plains = new(1);
+    public static readonly TileId Desert = new(2);
 }

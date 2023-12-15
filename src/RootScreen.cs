@@ -101,7 +101,10 @@ internal class RootScreen : ScreenObject
             for (int col = 0; col < worldWidth; col++)
             {
                 MapTile tile = worldGenerator.GetTileAtPossition(row, col);
-                _world.SetGlyph(col, row, tile.GetSprite(), tile.Color);
+                if(tile.Background.HasValue)
+                    _world.SetGlyph(col, row, tile.GetSprite(), tile.Color, tile.Background.Value);
+                else 
+                    _world.SetGlyph(col, row, tile.GetSprite(), tile.Color);
             }
         }
     }
@@ -114,6 +117,19 @@ internal class RootScreen : ScreenObject
         DrawnWorldMap();
         UpdateInformations();
     }
+
+    public void UpdateMapAtlas()
+    {
+        TileAtlas newAtlas = _selectedMap switch
+        {
+            SelectedMap.Plains => PlainsTiles.Instance,
+            SelectedMap.Desert => DesertTiles.Instance,
+            _ => throw new NotImplementedException()
+        };
+        
+        worldGenerator.ChangeAtlasInstance(newAtlas);
+    }
+    
     private void DrawnWorldMap()
     {
         if(worldMap is null) return;
@@ -122,7 +138,10 @@ internal class RootScreen : ScreenObject
             for(int row = 0; row < worldWidth; row++)
             {
                 MapTile tile = worldMap.tiles[col, row];
-                _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color);
+                if(tile.Background.HasValue)
+                    _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color, tile.Background.Value);
+                else
+                    _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color);
             }
         }
     }
@@ -144,11 +163,15 @@ internal class RootScreen : ScreenObject
     
     private void OnResetButtonClick()
     {
-        worldGenerator.ResetMap();
         _executionMode = _menu.executionMode;
         _selectedMap = _menu.selectedMap;
+        
         _generationTime.Reset();
         _saveLoadMapControlersMenu.Reset();
+        UpdateMapAtlas();
+        worldGenerator.ResetMap();
+        _world.Clear();
+        
         _generationReady = false;
     }
 }
