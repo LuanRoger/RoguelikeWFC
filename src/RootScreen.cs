@@ -101,7 +101,10 @@ internal class RootScreen : ScreenObject
             for (int col = 0; col < worldWidth; col++)
             {
                 MapTile tile = worldGenerator.GetTileAtPossition(row, col);
-                _world.SetGlyph(col, row, tile.GetSprite(), tile.Color);
+                if(tile.Background.HasValue)
+                    _world.SetGlyph(col, row, tile.GetSprite(), tile.Color, tile.Background.Value);
+                else 
+                    _world.SetGlyph(col, row, tile.GetSprite(), tile.Color);
             }
         }
     }
