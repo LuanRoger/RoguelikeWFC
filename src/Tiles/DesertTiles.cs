@@ -32,7 +32,12 @@ public class DesertTiles() : TileAtlas(
         new DesertSandTile(),
         new RockTile(),
         new CactusTile(),
-    }, AtlasIDs.Desert)
+    }, AtlasIDs.Desert, new()
+    {
+        { TileIDs.DesertSand, 0.8f },
+        { TileIDs.Rock, 0.05f },
+        { TileIDs.Cactus, 0.1f }
+    })
 {
     private static DesertTiles? _instance;
 

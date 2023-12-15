@@ -1,4 +1,5 @@
 ﻿using RoguelikeWFC.Tiles;
+using RoguelikeWFC.Utils;
 
 namespace RoguelikeWFC.WFC;
 
@@ -107,7 +108,16 @@ public class WaveMap
     public byte GetRandomTileFromPossition(WavePossitionPoint possition)
     {
         Random rng = new();
+        
         WavePossition wavePossition = GetPossitionAt(possition);
+        
+        if (_tileAtlas.TileFrequency is not null)
+        {
+            var filteredFrequencyByEntropy = _tileAtlas.TileFrequency
+                .Where(p => wavePossition.Entropy.Contains(p.Key))
+                .ToDictionary();
+            return TileFrequencyBased.PickTileIdByFrequency(ref rng, filteredFrequencyByEntropy);
+        }
         
         int tileIndex = rng.Next(0, wavePossition.Entropy.Length);
         return wavePossition.Entropy[tileIndex];
