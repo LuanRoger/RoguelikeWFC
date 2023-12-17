@@ -51,7 +51,7 @@ public class WaveMap
                 WavePossition wavePossition = wave.wave[row, col];
                 
                 if (wavePossition.collapsed ||
-                    !includeConflicts && wavePossition.hasConflict ||
+                    !includeConflicts && wavePossition.conflict ||
                     wavePossition.Entropy.Length >= smallerEntropyLength) 
                     continue;
                 
@@ -64,10 +64,58 @@ public class WaveMap
         return new(smallerEntropyRow, smallerEntropyCol);
     }
     
-    public WavePossition GetPossitionAt(WavePossitionPoint point) =>
+    public WavePossition GetPossitionAtPoint(WavePossitionPoint point) =>
         wave.wave[point.row, point.column];
+    
     public void UpdateEntropyAt(WavePossitionPoint possitionPoint, byte[] newEntropy) =>
         wave.UpdateEntropyAt(possitionPoint, newEntropy);
+    
+    public bool IsTileIsolation(ref WavePossitionPoint tilePossition)
+    {
+        WavePossition possition = GetPossitionAtPoint(tilePossition);
+        MapTile tileAtPossition = GetTileAtPossition(tilePossition.row, tilePossition.column);
+        
+        if(tileAtPossition.CanBeIsolated)
+            return true;
+
+        WavePossitionArea possitionArea = new(tilePossition);
+        
+        try
+        {
+            WavePossition onTopPossition = GetPossitionAtPoint(possitionArea.Top);
+            if (onTopPossition.collapsed && onTopPossition.Entropy[0] == tileAtPossition.Id)
+                return false;
+        }
+        catch (IndexOutOfRangeException) { /* ignored */ }
+
+        try
+        {
+            WavePossition onRightPossition = GetPossitionAtPoint(possitionArea.Right);
+            if (onRightPossition.collapsed && onRightPossition.Entropy[0] == tileAtPossition.Id)
+                return false;
+        }
+        catch (IndexOutOfRangeException) { /* ignored */ }
+
+        try
+        {
+            WavePossition onBottomPossition = GetPossitionAtPoint(possitionArea.Bottom);
+            if (onBottomPossition.collapsed && onBottomPossition.Entropy[0] == tileAtPossition.Id)
+                return false;
+        }
+        catch (IndexOutOfRangeException) { /* ignored */ }
+
+        try
+        {
+            WavePossition onLeftPossition = GetPossitionAtPoint(possitionArea.Left);
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if(onLeftPossition.collapsed && onLeftPossition.Entropy[0] == tileAtPossition.Id)
+                return false;
+        }
+        catch (IndexOutOfRangeException) { /* ignored */ }
+
+        return true;
+    }
+    
     public bool AllCollapsed() =>
         wave.AllCollapsed();
     
@@ -76,7 +124,7 @@ public class WaveMap
         int count = 0;
         foreach (WavePossition wavePossition in wave.wave)
         {
-            if(wavePossition is { collapsed: true, hasConflict: false })
+            if(wavePossition is { collapsed: true, conflict: false })
                 count++;
         }
         
@@ -87,18 +135,34 @@ public class WaveMap
     {
         foreach (WavePossition wavePossition in wave.wave)
         {
-            if (wavePossition is { collapsed: false, hasConflict: false })
+            if (wavePossition is { collapsed: false, conflict: false })
                 return false;
         }
 
         return true;
     }
+
+    public bool HasTileIsolation()
+    {
+        for (int row = 0; row < height; row++)
+        {
+            for (int col = 0; col < width; col++)
+            {
+                WavePossitionPoint possitionPoint = new(row, col);
+                if (!IsTileIsolation(ref possitionPoint))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+    
     public int GetCountOfConflicts()
     {
         int count = 0;
         foreach (WavePossition wavePossition in wave.wave)
         {
-            if(wavePossition.hasConflict)
+            if(wavePossition.conflict)
                 count++;
         }
         
@@ -109,7 +173,7 @@ public class WaveMap
     {
         Random rng = new();
         
-        WavePossition wavePossition = GetPossitionAt(possition);
+        WavePossition wavePossition = GetPossitionAtPoint(possition);
         
         if (_tileAtlas.TileFrequency is not null)
         {
@@ -137,7 +201,7 @@ public class WaveMap
     public MapTile GetTileAtPossition(int rowIndex, int columnIndex)
     {
         WavePossition possition = wave.wave[rowIndex, columnIndex];
-        if(possition.hasConflict)
+        if(possition.conflict)
             return _nullTile;
         if(!possition.collapsed)
             return new TextTile(possition.Entropy.Length.ToString()[0]);
@@ -145,6 +209,8 @@ public class WaveMap
         int tileId = possition.Entropy[0];
         return GetTileById(tileId);
     }
+    public MapTile GetTileAtPossition(WavePossitionPoint possitionPoint) =>
+        GetTileAtPossition(possitionPoint.row, possitionPoint.column);
     
     public void Reset()
     {
