@@ -124,6 +124,7 @@ internal class RootScreen : ScreenObject
         {
             SelectedMap.Plains => PlainsTiles.Instance,
             SelectedMap.Desert => DesertTiles.Instance,
+            SelectedMap.Ocean => OceanAtlas.Instance,
             _ => throw new NotImplementedException()
         };
         
