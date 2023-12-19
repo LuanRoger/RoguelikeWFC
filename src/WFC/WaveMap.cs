@@ -75,7 +75,7 @@ public class WaveMap
         WavePossition possition = GetPossitionAtPoint(tilePossition);
         MapTile tileAtPossition = GetTileAtPossition(tilePossition.row, tilePossition.column);
         
-        if(tileAtPossition.CanBeIsolated)
+        if(possition.conflict || !possition.collapsed || tileAtPossition.CanBeIsolated)
             return true;
 
         WavePossitionArea possitionArea = new(tilePossition);
@@ -84,7 +84,7 @@ public class WaveMap
         {
             WavePossition onTopPossition = GetPossitionAtPoint(possitionArea.Top);
             if (onTopPossition.collapsed && onTopPossition.Entropy[0] == tileAtPossition.Id)
-                return false;
+                return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }
 
@@ -92,7 +92,7 @@ public class WaveMap
         {
             WavePossition onRightPossition = GetPossitionAtPoint(possitionArea.Right);
             if (onRightPossition.collapsed && onRightPossition.Entropy[0] == tileAtPossition.Id)
-                return false;
+                return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }
 
@@ -100,7 +100,7 @@ public class WaveMap
         {
             WavePossition onBottomPossition = GetPossitionAtPoint(possitionArea.Bottom);
             if (onBottomPossition.collapsed && onBottomPossition.Entropy[0] == tileAtPossition.Id)
-                return false;
+                return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }
 
@@ -109,11 +109,11 @@ public class WaveMap
             WavePossition onLeftPossition = GetPossitionAtPoint(possitionArea.Left);
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if(onLeftPossition.collapsed && onLeftPossition.Entropy[0] == tileAtPossition.Id)
-                return false;
+                return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }
 
-        return true;
+        return false;
     }
     
     public bool AllCollapsed() =>
@@ -149,12 +149,12 @@ public class WaveMap
             for (int col = 0; col < width; col++)
             {
                 WavePossitionPoint possitionPoint = new(row, col);
-                if (!IsTileIsolation(ref possitionPoint))
-                    return false;
+                if (IsTileIsolation(ref possitionPoint))
+                    return true;
             }
         }
 
-        return true;
+        return false;
     }
     
     public int GetCountOfConflicts()

@@ -15,7 +15,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
     private GenerationStepState _generationStepState = GenerationStepState.Idle;
 
     private bool allCollapsed => _waveMap.AllCollapsed();
-    private bool clean => _waveMap.HasOnlyConflicts() && !_waveMap.HasTileIsolation();
+    private bool clean { get; set; } = false;
 
     public GenerationStepState generationState
     {
@@ -101,13 +101,11 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
     {
         generationState = GenerationStepState.PosGenerationProcessing;
         
-        if (_waveMap.HasOnlyConflicts())
-            UnpropagateNonCollapsed();
-        
-        if(_waveMap.HasTileIsolation())
-            ClearTileIsolation();
+        UnpropagateNonCollapsed(out bool noConflincts);
+        ClearTileIsolation(out bool noIsolation);
         
         _generationStepState = GenerationStepState.Propagation;
+        clean = noConflincts && noIsolation;
     }
     
     private void PropagateState()
@@ -166,8 +164,9 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
         }
     }
     
-    private void UnpropagateNonCollapsed()
+    private void UnpropagateNonCollapsed(out bool noConflincts)
     {
+        noConflincts = true;
         for (int row = 0; row < height; row++)
         {
             for (int col = 0; col < width; col++)
@@ -176,6 +175,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
                 WavePossition possition = _waveMap.GetPossitionAtPoint(possitionPoint);
                 if(!possition.conflict)
                     continue;
+                noConflincts = false;
                 
                 _waveMap.UpdateEntropyAt(possitionPoint, _waveMap.ValidInitialTiles());
                 
@@ -208,8 +208,9 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
         }
     }
 
-    private void ClearTileIsolation()
+    private void ClearTileIsolation(out bool noIsolation)
     {
+        noIsolation = true;
         for (int row = 0; row < height; row++)
         {
             for (int col = 0; col < width; col++)
@@ -220,6 +221,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
                 
                 if(isTileIsolation)
                     continue;
+                noIsolation = false;
                 
                 _waveMap.UpdateEntropyAt(possitionPoint, _waveMap.ValidInitialTiles());
             }
