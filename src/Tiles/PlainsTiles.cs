@@ -29,7 +29,7 @@ public class MountainTile() : MapTile(TileIDs.Mountain, 30, Color.Gray,
         fitRight = new byte[] { TileIDs.Mountain, TileIDs.MountainPeek, TileIDs.Grass, TileIDs.Sand },
         fitBottom = new byte[] { TileIDs.Mountain, TileIDs.MountainPeek, TileIDs.Grass, TileIDs.Sand },
         fitLeft = new byte[] { TileIDs.Mountain, TileIDs.MountainPeek, TileIDs.Grass, TileIDs.Sand }
-    });
+    }, isolationGroup: new byte[] { TileIDs.Mountain, TileIDs.MountainPeek, TileIDs.Water, TileIDs.Sand });
 
 public class MountainPeekTile() : MapTile(TileIDs.MountainPeek, 30, Color.AnsiWhite,
     new()
