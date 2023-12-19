@@ -10,39 +10,39 @@ public abstract class MapTile
     public readonly Color Color;
     public readonly Color? Background;
     public readonly TileSocket TileSocket;
-    public readonly bool CanBeIsolated;
+    public readonly byte[]? IsolationGroup;
     
     public bool hasSpriteVariants => Glyph.Length > 1;
 
     protected MapTile(TileId id, ushort glyph, Color color, TileSocket tileSocket, 
-        bool canBeIsolated = true, Color? background = null)
+        byte[]? isolationGroup = null, Color? background = null)
     {
         Id = id;
         Glyph = new[] { glyph };
         Color = color;
         Background = background;
         TileSocket = tileSocket;
-        CanBeIsolated = canBeIsolated;
+        IsolationGroup = isolationGroup;
     }
     protected MapTile(TileId id, char glyph, Color color, TileSocket tileSocket, 
-        bool canBeIsolated = true, Color? background = null)
+        byte[]? isolationGroup = null, Color? background = null)
     {
         Id = id;
         Glyph = new ushort[] { glyph };
         Color = color;
         Background = background;
         TileSocket = tileSocket;
-        CanBeIsolated = canBeIsolated;
+        IsolationGroup = isolationGroup;
     }
     protected MapTile(TileId id, ushort[] glyphs, Color color, TileSocket tileSocket, 
-        bool canBeIsolated = true, Color? background = null)
+        byte[]? isolationGroup = null, Color? background = null)
     {
         Id = id;
         Glyph = glyphs;
         Color = color;
         Background = background;
         TileSocket = tileSocket;
-        CanBeIsolated = canBeIsolated;
+        IsolationGroup = isolationGroup;
     }
     
     public ushort GetSprite(bool variant = false)

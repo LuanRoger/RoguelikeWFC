@@ -8,7 +8,7 @@ public class OceanCoastGrass() : MapTile(TileIDs.OceanCoastGrass, 249, Color.Ans
     fitRight = new byte[] { TileIDs.OceanCoastGrass, TileIDs.OceanCoatsSand },
     fitBottom = new byte[] { TileIDs.OceanCoastGrass, TileIDs.OceanCoatsSand },
     fitLeft = new byte[] { TileIDs.OceanCoastGrass, TileIDs.OceanCoatsSand }
-}, canBeIsolated: false, background: Color.GreenYellow);
+},  background: Color.GreenYellow);
 
 public class OceanCoastSand() : MapTile(TileIDs.OceanCoatsSand, 178, Color.Yellow, new()
 {
@@ -16,7 +16,7 @@ public class OceanCoastSand() : MapTile(TileIDs.OceanCoatsSand, 178, Color.Yello
     fitRight = new byte[] { TileIDs.OceanCoatsSand, TileIDs.OceanCoastGrass, TileIDs.Water },
     fitBottom = new byte[] { TileIDs.OceanCoatsSand, TileIDs.OceanCoastGrass, TileIDs.Water },
     fitLeft = new byte[] { TileIDs.OceanCoatsSand, TileIDs.OceanCoastGrass, TileIDs.Water }
-}, canBeIsolated: false, background: Color.GreenYellow);
+},  background: Color.GreenYellow);
 
 public class WatterTile() : MapTile(TileIDs.Water, 247, Color.AnsiCyan, new()
 {
@@ -24,7 +24,7 @@ public class WatterTile() : MapTile(TileIDs.Water, 247, Color.AnsiCyan, new()
     fitRight = new byte[] { TileIDs.Water, TileIDs.Ocean, TileIDs.OceanCoatsSand },
     fitBottom = new byte[] { TileIDs.Water, TileIDs.Ocean, TileIDs.OceanCoatsSand },
     fitLeft = new byte[] { TileIDs.Water, TileIDs.Ocean, TileIDs.OceanCoatsSand }
-}, canBeIsolated: false, background: Color.Aqua);
+},  background: Color.Aqua);
 
 public class OceanTile() : MapTile(TileIDs.Ocean, 247, Color.AnsiBlue, new()
 {
@@ -32,7 +32,7 @@ public class OceanTile() : MapTile(TileIDs.Ocean, 247, Color.AnsiBlue, new()
     fitRight = new byte[] { TileIDs.Ocean, TileIDs.DeepOcean, TileIDs.Water },
     fitBottom = new byte[] { TileIDs.Ocean, TileIDs.DeepOcean, TileIDs.Water },
     fitLeft = new byte[] { TileIDs.Ocean, TileIDs.DeepOcean, TileIDs.Water }
-}, canBeIsolated: false, background: Color.Aqua);
+},  background: Color.Aqua);
 
 public class DeepOceanTile() : MapTile(TileIDs.DeepOcean, 247, Color.DarkBlue, new()
 {
@@ -40,7 +40,7 @@ public class DeepOceanTile() : MapTile(TileIDs.DeepOcean, 247, Color.DarkBlue, n
     fitRight = new byte[] { TileIDs.DeepOcean, TileIDs.Ocean },
     fitBottom = new byte[] { TileIDs.DeepOcean, TileIDs.Ocean },
     fitLeft = new byte[] { TileIDs.DeepOcean, TileIDs.Ocean }
-}, canBeIsolated: false, background: Color.Aqua);
+},  background: Color.Aqua);
 
 public class OceanAtlas() : TileAtlas(new MapTile[]
 {

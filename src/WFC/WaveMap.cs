@@ -75,15 +75,19 @@ public class WaveMap
         WavePossition possition = GetPossitionAtPoint(tilePossition);
         MapTile tileAtPossition = GetTileAtPossition(tilePossition.row, tilePossition.column);
         
-        if(possition.conflict || !possition.collapsed || tileAtPossition.CanBeIsolated)
+        if(possition.conflict || !possition.collapsed || tileAtPossition.IsolationGroup is null)
             return true;
 
         WavePossitionArea possitionArea = new(tilePossition);
+        byte[] allowedSideTilesByIsolationRule = tileAtPossition.IsolationGroup;
         
         try
         {
             WavePossition onTopPossition = GetPossitionAtPoint(possitionArea.Top);
-            if (onTopPossition.collapsed && onTopPossition.Entropy[0] == tileAtPossition.Id)
+            byte topTileId = onTopPossition.Entropy[0];
+            bool isAllowedTopTile = allowedSideTilesByIsolationRule.Contains(topTileId);
+            
+            if (onTopPossition.collapsed && isAllowedTopTile)
                 return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }
@@ -91,7 +95,10 @@ public class WaveMap
         try
         {
             WavePossition onRightPossition = GetPossitionAtPoint(possitionArea.Right);
-            if (onRightPossition.collapsed && onRightPossition.Entropy[0] == tileAtPossition.Id)
+            byte rightTileId = onRightPossition.Entropy[0];
+            bool isAllowedRightTile = allowedSideTilesByIsolationRule.Contains(rightTileId);
+            
+            if (onRightPossition.collapsed && isAllowedRightTile)
                 return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }
@@ -99,7 +106,10 @@ public class WaveMap
         try
         {
             WavePossition onBottomPossition = GetPossitionAtPoint(possitionArea.Bottom);
-            if (onBottomPossition.collapsed && onBottomPossition.Entropy[0] == tileAtPossition.Id)
+            byte bottomTileId = onBottomPossition.Entropy[0];
+            bool isAllowedBottomTile = allowedSideTilesByIsolationRule.Contains(bottomTileId);
+            
+            if (onBottomPossition.collapsed && isAllowedBottomTile)
                 return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }
@@ -107,8 +117,10 @@ public class WaveMap
         try
         {
             WavePossition onLeftPossition = GetPossitionAtPoint(possitionArea.Left);
-            // ReSharper disable once ConvertIfStatementToReturnStatement
-            if(onLeftPossition.collapsed && onLeftPossition.Entropy[0] == tileAtPossition.Id)
+            byte leftTileId = onLeftPossition.Entropy[0];
+            bool isAllowedLeftTile = allowedSideTilesByIsolationRule.Contains(leftTileId);
+            
+            if(onLeftPossition.collapsed && isAllowedLeftTile)
                 return true;
         }
         catch (IndexOutOfRangeException) { /* ignored */ }

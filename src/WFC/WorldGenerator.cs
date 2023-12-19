@@ -15,7 +15,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
     private GenerationStepState _generationStepState = GenerationStepState.Idle;
 
     private bool allCollapsed => _waveMap.AllCollapsed();
-    private bool clean { get; set; } = false;
+    private bool clean { get; set; }
 
     public GenerationStepState generationState
     {
