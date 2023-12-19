@@ -69,7 +69,7 @@ internal class RootScreen : ScreenObject
     
     private void InterateInteractive()
     {
-        if(worldGenerator.generationState != GenerationStepState.Finished)
+        if(worldGenerator.generationStepState != GenerationStepState.Finished)
         {
             worldGenerator.Wfc();
             DrawnMap();

@@ -12,19 +12,19 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
     private int height => _waveMap.height;
     private WorldMap? _worldMapIntance;
     private bool _updateMapInstance = true;
-    private GenerationStepState _generationStepState = GenerationStepState.Idle;
+    private GenerationStepState _generationStepStepState = GenerationStepState.Idle;
 
     private bool allCollapsed => _waveMap.AllCollapsed();
     private bool clean { get; set; }
 
-    public GenerationStepState generationState
+    public GenerationStepState generationStepState
     {
-        get => _generationStepState;
+        get => _generationStepStepState;
         private set
         {
-            if(value <= _generationStepState)
+            if(value <= _generationStepStepState)
                 return;
-            _generationStepState = value;
+            _generationStepStepState = value;
             OnGenerationStepStateChange?.Invoke(value);
         }
     }
@@ -63,7 +63,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
 
     public void Wfc(WfcCallKind callKind = WfcCallKind.Interation)
     {
-        generationState = GenerationStepState.WaveCollapse;
+        generationStepState = GenerationStepState.WaveCollapse;
         
         switch (callKind)
         {
@@ -78,7 +78,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
         }
         
         if(allCollapsed && clean)
-            generationState = GenerationStepState.Finished;
+            generationStepState = GenerationStepState.Finished;
     }
     private void WfcComplete()
     {
@@ -91,20 +91,20 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
         byte tileId = _waveMap.GetRandomTileFromPossition(possitionPoint);
         _waveMap.UpdateEntropyAt(possitionPoint, new[] { tileId });
 
-        generationState = GenerationStepState.Propagation;
+        generationStepState = GenerationStepState.Propagation;
         PropagateState();
         
-        if(_waveMap.HasOnlyConflicts() || _generationStepState == GenerationStepState.PosGenerationProcessing)
+        if(_waveMap.HasOnlyConflicts() || _generationStepStepState == GenerationStepState.PosGenerationProcessing)
             PosMapGenerationClean();
     }
     private void PosMapGenerationClean()
     {
-        generationState = GenerationStepState.PosGenerationProcessing;
+        generationStepState = GenerationStepState.PosGenerationProcessing;
         
         UnpropagateNonCollapsed(out bool noConflincts);
         ClearTileIsolation(out bool noIsolation);
         
-        _generationStepState = GenerationStepState.Propagation;
+        _generationStepStepState = GenerationStepState.Propagation;
         clean = noConflincts && noIsolation;
     }
     
@@ -252,5 +252,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
         _waveMap.Reset();
         _worldMapIntance = null;
         _updateMapInstance = true;
+        clean = false;
+        _generationStepStepState = GenerationStepState.Idle;
     }
 }
