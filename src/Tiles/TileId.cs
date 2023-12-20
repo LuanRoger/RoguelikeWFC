@@ -23,10 +23,16 @@ public static class TileIDs
     public static readonly TileId DesertSand = new(11);
     public static readonly TileId Rock = new(12);
     public static readonly TileId Cactus = new(13);
+    public static readonly TileId DeepOcean = new(14);
+    public static readonly TileId Ocean = new(15);
+    public static readonly TileId Water = new(16);
+    public static readonly TileId OceanCoatsSand = new(17);
+    public static readonly TileId OceanCoastGrass = new(18);
 }
 
 public static class AtlasIDs
 {
     public static readonly TileId Plains = new(1);
     public static readonly TileId Desert = new(2);
+    public static readonly TileId Ocean = new(3);
 }

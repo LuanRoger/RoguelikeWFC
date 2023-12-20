@@ -4,6 +4,7 @@ using RoguelikeWFC.Components.Enums;
 using RoguelikeWFC.Components.Models;
 using RoguelikeWFC.Tiles;
 using RoguelikeWFC.WFC;
+using RoguelikeWFC.WFC.Enum;
 
 namespace RoguelikeWFC;
 
@@ -68,9 +69,9 @@ internal class RootScreen : ScreenObject
     
     private void InterateInteractive()
     {
-        if(!worldGenerator.allCollapsed)
+        if(worldGenerator.generationStepState != GenerationStepState.Finished)
         {
-            worldGenerator.InterateWfcOnce();
+            worldGenerator.Wfc();
             DrawnMap();
         }
         else
@@ -85,7 +86,7 @@ internal class RootScreen : ScreenObject
     
     private void InterateInstant()
     {
-        worldGenerator.Wfc();
+        worldGenerator.Wfc(WfcCallKind.Complete);
         _generationReady = true;
         worldMap = worldGenerator.worldMap!;
         
@@ -124,6 +125,7 @@ internal class RootScreen : ScreenObject
         {
             SelectedMap.Plains => PlainsTiles.Instance,
             SelectedMap.Desert => DesertTiles.Instance,
+            SelectedMap.Ocean => OceanAtlas.Instance,
             _ => throw new NotImplementedException()
         };
         
