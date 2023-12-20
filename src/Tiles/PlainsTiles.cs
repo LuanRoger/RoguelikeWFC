@@ -9,13 +9,15 @@ public class TreeTile() : MapTile(TileIDs.Tree, new ushort[] { 5, 231 }, Color.B
     new(new byte[] { TileIDs.Tree, TileIDs.Grass, TileIDs.Dirt }));
 
 public class MountainTile() : MapTile(TileIDs.Mountain, 30, Color.Gray,
-    new(new byte[] { TileIDs.Mountain, TileIDs.MountainPeek, TileIDs.Grass, TileIDs.Sand }));
+    new(new byte[] { TileIDs.Mountain, TileIDs.MountainPeek, TileIDs.Grass, TileIDs.Sand }), 
+    isolationGroup: new byte[] { TileIDs.Mountain, TileIDs.MountainPeek });
 
 public class MountainPeekTile() : MapTile(TileIDs.MountainPeek, 30, Color.AnsiWhite,
     new(new byte[] { TileIDs.MountainPeek, TileIDs.Mountain }));
 
 public class RiverTile() : MapTile(TileIDs.River, 247, Color.AnsiBlue,
-    new(new byte[] { TileIDs.River, TileIDs.DeepRiver, TileIDs.Sand, TileIDs.Dirt }));
+    new(new byte[] { TileIDs.River, TileIDs.DeepRiver, TileIDs.Sand, TileIDs.Dirt }),
+    isolationGroup: new byte[] { TileIDs.River, TileIDs.DeepRiver });
 
 public class DeepRiverTile() : MapTile(TileIDs.DeepRiver, 247, Color.DarkBlue,
     new(new byte[] { TileIDs.DeepRiver, TileIDs.River }));
