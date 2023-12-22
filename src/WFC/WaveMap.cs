@@ -153,20 +153,24 @@ public class WaveMap
 
         return true;
     }
-
-    public bool HasTileIsolation()
+    
+    /// <summary>
+    /// Check if the offset area around the tile is out of bound.
+    /// </summary>
+    /// <param name="possitionArea">The tile area</param>
+    /// <param name="top">The top side is out of bounds</param>
+    /// <param name="right">The right side is out of bounds</param>
+    /// <param name="bottom">The bottom side is out of bounds</param>
+    /// <param name="left">The left side is out of bounds</param>
+    /// <returns>Return <c>true</c> if one of the sides is out of bound</returns>
+    public bool CheckAreaOutOfBound(in WavePossitionArea possitionArea, out bool top, out bool right, out bool bottom, out bool left)
     {
-        for (int row = 0; row < height; row++)
-        {
-            for (int col = 0; col < width; col++)
-            {
-                WavePossitionPoint possitionPoint = new(row, col);
-                if (IsTileIsolation(ref possitionPoint))
-                    return true;
-            }
-        }
+        top = possitionArea.TopRaw < 0 || possitionArea.TopRaw >= height;
+        right = possitionArea.RightRaw < 0 || possitionArea.RightRaw >= width;
+        bottom = possitionArea.BottomRaw < 0 || possitionArea.BottomRaw >= height;
+        left = possitionArea.LeftRaw < 0 || possitionArea.LeftRaw >= width;
 
-        return false;
+        return top || right || bottom || left;
     }
     
     public int GetCountOfConflicts()

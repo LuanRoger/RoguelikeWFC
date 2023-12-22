@@ -120,45 +120,38 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
                     continue;
                 
                 TileSocket socketMapTile = _waveMap.GetTileAtPossition(possitionPoint).TileSocket;
-                
-                int topRaw = row - 1;
-                int rightRaw = col + 1;
-                int bottomRaw = row + 1;
-                int leftRaw = col - 1;
 
                 WavePossitionArea possitionArea = new(possitionPoint);
+                _ = _waveMap.CheckAreaOutOfBound(possitionArea, out bool top, out bool right, out bool bottom, out bool left);
                 
-                if(leftRaw >= 0 && leftRaw < width)
-                {
-                    WavePossition leftPossition = _waveMap.GetPossitionAtPoint(possitionArea.Left);
-                    byte[] newEntropyLeft = leftPossition.Entropy
-                        .Intersect(socketMapTile.fitLeft);
-                    _waveMap.UpdateEntropyAt(possitionArea.Left, newEntropyLeft);
-                }
-
-                if(rightRaw >= 0 && rightRaw < width)
-                {
-                    WavePossition rightPossition = _waveMap.GetPossitionAtPoint(possitionArea.Right);
-                    byte[] newEntropyRight = rightPossition.Entropy
-                        .Intersect(socketMapTile.fitRight);
-                    _waveMap.UpdateEntropyAt(possitionArea.Right, newEntropyRight);
-                }
-
-                if(topRaw >= 0 && topRaw < height)
+                if(!top)
                 {
                     WavePossition topPossition = _waveMap.GetPossitionAtPoint(possitionArea.Top);
                     byte[] newEntropyTop = topPossition.Entropy
                         .Intersect(socketMapTile.fitTop);
                     _waveMap.UpdateEntropyAt(possitionArea.Top, newEntropyTop);
                 }
-
-                // ReSharper disable once InvertIf
-                if(bottomRaw >= 0 && bottomRaw < height)
+                if(!right)
+                {
+                    WavePossition rightPossition = _waveMap.GetPossitionAtPoint(possitionArea.Right);
+                    byte[] newEntropyRight = rightPossition.Entropy
+                        .Intersect(socketMapTile.fitRight);
+                    _waveMap.UpdateEntropyAt(possitionArea.Right, newEntropyRight);
+                }
+                if(!bottom)
                 {
                     WavePossition bottomPossition = _waveMap.GetPossitionAtPoint(possitionArea.Bottom);
                     byte[] newEntropyBottom = bottomPossition.Entropy
                         .Intersect(socketMapTile.fitBottom);
                     _waveMap.UpdateEntropyAt(possitionArea.Bottom, newEntropyBottom);
+                }
+                // ReSharper disable once InvertIf
+                if(!left)
+                {
+                    WavePossition leftPossition = _waveMap.GetPossitionAtPoint(possitionArea.Left);
+                    byte[] newEntropyLeft = leftPossition.Entropy
+                        .Intersect(socketMapTile.fitLeft);
+                    _waveMap.UpdateEntropyAt(possitionArea.Left, newEntropyLeft);
                 }
             }
         }

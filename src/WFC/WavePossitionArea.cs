@@ -1,9 +1,27 @@
 ﻿namespace RoguelikeWFC.WFC;
 
-public readonly struct WavePossitionArea(WavePossitionPoint possitionPoint)
+public readonly struct WavePossitionArea
 {
-    public readonly WavePossitionPoint Top = new(possitionPoint.row - 1, possitionPoint.column);
-    public readonly WavePossitionPoint Right = new(possitionPoint.row, possitionPoint.column + 1);
-    public readonly WavePossitionPoint Bottom = new(possitionPoint.row + 1, possitionPoint.column);
-    public readonly WavePossitionPoint Left = new(possitionPoint.row, possitionPoint.column - 1);
+    public readonly int TopRaw;
+    public readonly int RightRaw;
+    public readonly int BottomRaw;
+    public readonly int LeftRaw;
+    
+    public readonly WavePossitionPoint Top;
+    public readonly WavePossitionPoint Right;
+    public readonly WavePossitionPoint Bottom;
+    public readonly WavePossitionPoint Left;
+
+    public WavePossitionArea(WavePossitionPoint possitionPoint)
+    {
+        TopRaw = possitionPoint.row - 1;
+        RightRaw = possitionPoint.column + 1;
+        BottomRaw = possitionPoint.row + 1;
+        LeftRaw = possitionPoint.column - 1;
+
+        Top = new(TopRaw, possitionPoint.column);
+        Right = new(possitionPoint.row, RightRaw);
+        Bottom = new(BottomRaw, possitionPoint.column);
+        Left = new(possitionPoint.row, LeftRaw);
+    }
 }
