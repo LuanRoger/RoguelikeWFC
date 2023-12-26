@@ -1,4 +1,4 @@
-﻿namespace RoguelikeWFC.Components.Models;
+﻿namespace LawGen.Information;
 
 public record GenerationInformation
 {

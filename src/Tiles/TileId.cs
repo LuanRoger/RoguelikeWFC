@@ -1,13 +1,5 @@
 ﻿namespace RoguelikeWFC.Tiles;
 
-public readonly struct TileId(byte id)
-{
-    private readonly byte _id = id;
-
-    public static implicit operator byte(TileId tileId) => 
-        tileId._id;
-}
-
 public static class TileIDs
 { 
     public static readonly TileId Null = new(0);
