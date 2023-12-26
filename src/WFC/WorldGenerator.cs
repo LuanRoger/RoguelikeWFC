@@ -89,7 +89,7 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
     {
         WavePossitionPoint possitionPoint = _waveMap.GetSmallerEntropyPossition();
         byte tileId = _waveMap.GetRandomTileFromPossition(possitionPoint);
-        _waveMap.UpdateEntropyAt(possitionPoint, new[] { tileId });
+        _waveMap.UpdateEntropyAt(possitionPoint, [tileId]);
 
         generationStepState = GenerationStepState.Propagation;
         PropagateState();
@@ -101,8 +101,23 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
     {
         generationStepState = GenerationStepState.PosGenerationProcessing;
         
-        UnpropagateNonCollapsed(out bool noConflincts);
-        ClearTileIsolation(out bool noIsolation);
+        bool noConflincts = true;
+        bool noIsolation = true;
+        for (int row = 0; row < height; row++)
+        {
+            for (int col = 0; col < width; col++)
+            {
+                WavePossitionPoint possitionPoint = new(row, col);
+                WavePossition possition = _waveMap.GetPossitionAtPoint(possitionPoint);
+                
+                bool conflictUncollapsed = UncollapseConflictTiles(possitionPoint, possition);
+                bool isolationFixed = ClearTileIsolation(possitionPoint);
+                if(conflictUncollapsed)
+                    noConflincts = false;
+                if(isolationFixed)
+                    noIsolation = false;
+            }
+        }
         
         _generationStepStepState = GenerationStepState.Propagation;
         clean = noConflincts && noIsolation;
@@ -157,68 +172,48 @@ public class WorldGenerator(int width, int height, TileAtlas tileAtlas)
         }
     }
     
-    private void UnpropagateNonCollapsed(out bool noConflincts)
+    /// <summary>
+    /// Unpropagate the conflict tile and update the entropy of the tiles around it.
+    /// </summary>
+    /// <param name="possitionPoint">Tile matrix possition</param>
+    /// <param name="possition">Tile information</param>
+    /// <returns><c>true</c> if the tile are in conflict and it was updated, otherwise, <c>false</c></returns>
+    private bool UncollapseConflictTiles(WavePossitionPoint possitionPoint, WavePossition possition)
     {
-        noConflincts = true;
-        for (int row = 0; row < height; row++)
-        {
-            for (int col = 0; col < width; col++)
-            {
-                WavePossitionPoint possitionPoint = new(row, col);
-                WavePossition possition = _waveMap.GetPossitionAtPoint(possitionPoint);
-                if(!possition.conflict)
-                    continue;
-                noConflincts = false;
+        if(!possition.conflict)
+            return false;
                 
-                _waveMap.UpdateEntropyAt(possitionPoint, _waveMap.ValidInitialTiles());
+        _waveMap.UpdateEntropyAt(possitionPoint, _waveMap.ValidInitialTiles());
                 
-                //TODO: Move to WaveMap and create method to check if the bounds are valid
-                int topRaw = row - 1;
-                int rightRaw = col + 1;
-                int bottomRaw = row + 1;
-                int leftRaw = col - 1;
-
-                WavePossitionArea possitionArea = new(possitionPoint);
+        WavePossitionArea possitionArea = new(possitionPoint);
+        _ = _waveMap.CheckAreaOutOfBound(possitionArea, out bool top, out bool right, out bool bottom, out bool left);
                 
-                if(leftRaw >= 0 && leftRaw < width)
-                {
-                    _waveMap.UpdateEntropyAt(possitionArea.Left, _waveMap.ValidInitialTiles());
-                }
-                if(rightRaw >= 0 && rightRaw < width)
-                {
-                    _waveMap.UpdateEntropyAt(possitionArea.Right, _waveMap.ValidInitialTiles());
-                }
-                if(topRaw >= 0 && topRaw < height)
-                {
-                    _waveMap.UpdateEntropyAt(possitionArea.Top, _waveMap.ValidInitialTiles());
-                }
-                // ReSharper disable once InvertIf
-                if(bottomRaw >= 0 && bottomRaw < height)
-                {
-                    _waveMap.UpdateEntropyAt(possitionArea.Bottom, _waveMap.ValidInitialTiles());
-                }
-            }
-        }
+        if(!left)
+            _waveMap.UpdateEntropyAt(possitionArea.Left, _waveMap.ValidInitialTiles());
+        if(!right)
+            _waveMap.UpdateEntropyAt(possitionArea.Right, _waveMap.ValidInitialTiles());
+        if(!top)
+            _waveMap.UpdateEntropyAt(possitionArea.Top, _waveMap.ValidInitialTiles());
+        if(!bottom)
+            _waveMap.UpdateEntropyAt(possitionArea.Bottom, _waveMap.ValidInitialTiles());
+        
+        return true;
     }
-
-    private void ClearTileIsolation(out bool noIsolation)
+    
+    /// <summary>
+    /// Uncollapse the non isolated tile.
+    /// </summary>
+    /// <param name="possitionPoint">The tile possition</param>
+    /// <returns><c>true</c> if the tile is not isolated and the entropy was updated,
+    /// otherwise, <c>false</c></returns>
+    private bool ClearTileIsolation(WavePossitionPoint possitionPoint)
     {
-        noIsolation = true;
-        for (int row = 0; row < height; row++)
-        {
-            for (int col = 0; col < width; col++)
-            {
-                WavePossitionPoint possitionPoint = new(row, col);
-                
-                bool isTileIsolation = _waveMap.IsTileIsolation(ref possitionPoint);
-                
-                if(isTileIsolation)
-                    continue;
-                noIsolation = false;
-                
-                _waveMap.UpdateEntropyAt(possitionPoint, _waveMap.ValidInitialTiles());
-            }
-        }
+        bool isTileIsolation = _waveMap.IsTileIsolation(ref possitionPoint);
+        if(isTileIsolation)
+            return false;
+        
+        _waveMap.UpdateEntropyAt(possitionPoint, _waveMap.ValidInitialTiles());
+        return true;
     }
 
     public void ChangeAtlasInstance(TileAtlas newAtlas)
