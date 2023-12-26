@@ -1,7 +1,8 @@
 ﻿using System.Xml.Serialization;
+using LawGen.Core.Tiling;
+using LawGen.WFC;
 using RoguelikeWFC.MapIO.Models;
 using RoguelikeWFC.MetaMap;
-using RoguelikeWFC.WFC;
 
 namespace RoguelikeWFC.MapIO;
 
@@ -20,7 +21,7 @@ public class MapSaver : IDisposable, IAsyncDisposable
     
     private SerializebleWorldMap GetSerializebleWorldMap(WorldMap map)
     {
-        byte[] tiles = new byte[map.width * map.height];
+        byte[] tiles = new byte[map.Width * map.Height];
         int tileIndex = 0;
         foreach (MapTile mapTile in map.tiles)
         {
@@ -30,8 +31,8 @@ public class MapSaver : IDisposable, IAsyncDisposable
         return new()
         {
             version = MetaMapRecognize.META_MAP_VERSION,
-            width = map.width,
-            height = map.height,
+            width = map.Width,
+            height = map.Height,
             atlasId = map.AtlasId,
             tiles = tiles
         };

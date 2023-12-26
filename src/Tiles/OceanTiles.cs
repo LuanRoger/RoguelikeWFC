@@ -1,45 +1,54 @@
-﻿using RoguelikeWFC.WFC;
+﻿using LawGen.Core.Tiling;
+using RoguelikeWFC.Tiles.Sprites;
 
 namespace RoguelikeWFC.Tiles;
 
-public class OceanCoastGrass() : MapTile(TileIDs.OceanCoastGrass, 249, Color.AnsiGreen, 
-    new(new byte[] { TileIDs.OceanCoastGrass, TileIDs.OceanCoatsSand }),  
-    background: Color.Yellow);
-
-public class OceanCoastSand() : MapTile(TileIDs.OceanCoatsSand, 178, Color.Yellow, 
-    new(new byte[] { TileIDs.OceanCoatsSand, TileIDs.OceanCoastGrass, TileIDs.Water }),
-    isolationGroup: new byte[] { TileIDs.OceanCoatsSand });
-
-public class WatterTile() : MapTile(TileIDs.Water, 247, Color.AnsiCyan, 
-    new(new byte[] { TileIDs.Water, TileIDs.Ocean, TileIDs.OceanCoatsSand }), 
-    background: Color.Aqua,
-    isolationGroup: new byte[] { TileIDs.Water, TileIDs.Ocean, TileIDs.DeepOcean });
-
-public class OceanTile() : MapTile(TileIDs.Ocean, 247, Color.AnsiBlue, 
-    new(new byte[] { TileIDs.Ocean, TileIDs.DeepOcean, TileIDs.Water }), 
-    background: Color.Aqua);
-
-public class DeepOceanTile() : MapTile(TileIDs.DeepOcean, 247, Color.DarkBlue, 
-    new(new byte[] { TileIDs.DeepOcean, TileIDs.Ocean }), 
-    background: Color.Aqua);
-
-public class OceanAtlas() : TileAtlas(new MapTile[]
+public record OceanCoastGrass() : RenderableMapTile(TileIDs.OCEAN_COAST_GRASS, 249,
+    new([ TileIDs.OCEAN_COAST_GRASS, TileIDs.OCEAN_COATS_SAND ]))
 {
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
+        new(Color.AnsiGreen, Color.Yellow);
+}
+
+public record OceanCoastSand() : RenderableMapTile(TileIDs.OCEAN_COATS_SAND, 178,
+    new([ TileIDs.OCEAN_COATS_SAND, TileIDs.OCEAN_COAST_GRASS, TileIDs.WATER ]),
+    isolationGroup: [ TileIDs.OCEAN_COATS_SAND ])
+{
+    public override TileSpriteMetadata SpriteMetadata { get; } =
+        new(Color.Yellow);
+}
+
+public record WatterTile() : RenderableMapTile(TileIDs.WATER, 247,
+    new([ TileIDs.WATER, TileIDs.OCEAN, TileIDs.OCEAN_COATS_SAND ]),
+    isolationGroup: [ TileIDs.WATER, TileIDs.OCEAN, TileIDs.DEEP_OCEAN ])
+{
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
+        new(Color.AnsiCyan, Color.Aqua);
+}
+
+public record OceanTile() : RenderableMapTile(TileIDs.OCEAN, 247,
+    new([ TileIDs.OCEAN, TileIDs.DEEP_OCEAN, TileIDs.WATER ]))
+{
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
+        new(Color.AnsiBlue, Color.Aqua);
+}
+
+public record DeepOceanTile() : RenderableMapTile(TileIDs.DEEP_OCEAN, 247,
+    new([ TileIDs.DEEP_OCEAN, TileIDs.OCEAN ]))
+{
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
+        new(Color.DarkBlue, Color.Aqua);
+}
+
+public class OceanAtlas() : TileAtlas([
     new OceanCoastGrass(),
     new OceanCoastSand(),
     new WatterTile(),
     new OceanTile(),
     new DeepOceanTile()
-}, AtlasIDs.Ocean)
+], AtlasIDs.OCEAN)
 {
     private static OceanAtlas? _instance;
 
-    public static OceanAtlas Instance
-    {
-        get
-        {
-            _instance ??= new();
-            return _instance;
-        }
-    }
+    public static OceanAtlas Instance => _instance ??= new();
 }

@@ -1,4 +1,5 @@
-﻿using RoguelikeWFC.Components.Models;
+﻿using LawGen.Information;
+using RoguelikeWFC.Components.Models;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 

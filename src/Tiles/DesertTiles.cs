@@ -1,31 +1,39 @@
-﻿using RoguelikeWFC.WFC;
+﻿using LawGen.Core.Tiling;
+using RoguelikeWFC.Tiles.Sprites;
 
 namespace RoguelikeWFC.Tiles;
 
-public class DesertSandTile() : MapTile(TileIDs.DesertSand, new ushort[] { 176, 177, 178 }, Color.AnsiYellowBright, 
-    new(new byte[] { TileIDs.DesertSand, TileIDs.Rock, TileIDs.Cactus }), 
-    background: Color.LightYellow);
+public record DesertSandTile() : RenderableMapTile(TileIDs.DESERT_SAND, [ 176, 177, 178 ],
+    new([ TileIDs.DESERT_SAND, TileIDs.ROCK, TileIDs.CACTUS ]))
+{
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
+        new(Color.AnsiYellowBright, Color.LightYellow);
+}
 
-public class RockTile() : MapTile(TileIDs.Rock, new ushort[] { 239 }, Color.DimGray, 
-    new(new byte[] { TileIDs.DesertSand }), 
-    background: Color.LightYellow);
+public record RockTile() : RenderableMapTile(TileIDs.ROCK, 239,
+    new([ TileIDs.DESERT_SAND ]))
+{
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
+        new(Color.DimGray, Color.LightYellow);
+}
 
-public class CactusTile() : MapTile(TileIDs.Cactus, new ushort[] { 33 }, Color.LimeGreen, 
-    new(new byte[] { TileIDs.DesertSand }), 
-    background: Color.LightYellow);
+public record CactusTile() : RenderableMapTile(TileIDs.CACTUS, 33,
+    new([ TileIDs.DESERT_SAND ]))
+{
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
+        new(Color.LimeGreen, Color.LightYellow);
+}
 
 public class DesertTiles() : TileAtlas(
-    new MapTile[]
-    {
-        new DesertSandTile(),
+[
+    new DesertSandTile(),
         new RockTile(),
-        new CactusTile(),
-    }, AtlasIDs.Desert, new()
-    {
-        { TileIDs.DesertSand, 0.8f },
-        { TileIDs.Rock, 0.05f },
-        { TileIDs.Cactus, 0.1f }
-    })
+        new CactusTile()
+], AtlasIDs.DESERT, [
+    new(TileIDs.DESERT_SAND, 0.8f),
+    new(TileIDs.ROCK, 0.05f),
+    new(TileIDs.CACTUS, 0.1f)
+])
 {
     private static DesertTiles? _instance;
 

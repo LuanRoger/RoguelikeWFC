@@ -1,6 +1,5 @@
 ﻿using System.Xml.Serialization;
 using RoguelikeWFC.MapIO.Models;
-using RoguelikeWFC.WFC;
 
 namespace RoguelikeWFC.MapIO;
 
