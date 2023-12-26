@@ -1,30 +1,30 @@
 ﻿namespace RoguelikeWFC.Tiles;
 
 public static class TileIDs
-{ 
-    public static readonly TileId Null = new(0);
-    public static readonly TileId Text = new(1);
-    public static readonly TileId Grass = new(2);
-    public static readonly TileId Tree = new(3);
-    public static readonly TileId River = new(4);
-    public static readonly TileId DeepRiver = new(5);
-    public static readonly TileId Sand = new(6);
-    public static readonly TileId Mountain = new(8);
-    public static readonly TileId MountainPeek = new(9);
-    public static readonly TileId Dirt = new(10);
-    public static readonly TileId DesertSand = new(11);
-    public static readonly TileId Rock = new(12);
-    public static readonly TileId Cactus = new(13);
-    public static readonly TileId DeepOcean = new(14);
-    public static readonly TileId Ocean = new(15);
-    public static readonly TileId Water = new(16);
-    public static readonly TileId OceanCoatsSand = new(17);
-    public static readonly TileId OceanCoastGrass = new(18);
+{
+    public const byte NULL = 0;
+    public const byte TEXT = 1;
+    public const byte GRASS = 2;
+    public const byte TREE = 3;
+    public const byte RIVER = 4;
+    public const byte DEEP_RIVER = 5;
+    public const byte SAND = 6;
+    public const byte MOUNTAIN = 8;
+    public const byte MOUNTAIN_PEEK = 9;
+    public const byte DIRT = 10;
+    public const byte DESERT_SAND = 11;
+    public const byte ROCK = 12;
+    public const byte CACTUS = 13;
+    public const byte DEEP_OCEAN = 14;
+    public const byte OCEAN = 15;
+    public const byte WATER = 16;
+    public const byte OCEAN_COATS_SAND = 17;
+    public const byte OCEAN_COAST_GRASS = 18;
 }
 
 public static class AtlasIDs
 {
-    public static readonly TileId Plains = new(1);
-    public static readonly TileId Desert = new(2);
-    public static readonly TileId Ocean = new(3);
+    public const byte PLAINS = 1;
+    public const byte DESERT = 2;
+    public const byte OCEAN = 3;
 }

@@ -1,37 +1,62 @@
-﻿using RoguelikeWFC.WFC;
+﻿using LawGen.Core.Tiling;
 
 namespace RoguelikeWFC.Tiles;
 
-public class GrassTile() : MapTile(TileIDs.Grass, new ushort[] { 249, 250 }, Color.AnsiGreen,
-    new(new byte[] { TileIDs.Grass, TileIDs.Tree, TileIDs.Mountain, TileIDs.Sand }));
+public record GrassTile() : MapTile(TileIDs.GRASS, [249, 250],
+    new([TileIDs.GRASS, TileIDs.TREE, TileIDs.MOUNTAIN, TileIDs.SAND]))
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.Green);
+}
 
-public class TreeTile() : MapTile(TileIDs.Tree, new ushort[] { 5, 231 }, Color.Brown,
-    new(new byte[] { TileIDs.Tree, TileIDs.Grass, TileIDs.Dirt }));
+public record TreeTile() : MapTile(TileIDs.TREE, [5, 231],
+    new([TileIDs.TREE, TileIDs.GRASS, TileIDs.DIRT]))
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.Brown);
+}
 
-public class MountainTile() : MapTile(TileIDs.Mountain, 30, Color.Gray,
-    new(new byte[] { TileIDs.Mountain, TileIDs.MountainPeek, TileIDs.Grass, TileIDs.Sand }), 
-    isolationGroup: new byte[] { TileIDs.Mountain, TileIDs.MountainPeek });
+public record MountainTile() : MapTile(TileIDs.MOUNTAIN, 30,
+    new([ TileIDs.MOUNTAIN, TileIDs.MOUNTAIN_PEEK, TileIDs.GRASS, TileIDs.SAND ]),
+    isolationGroup: [ TileIDs.MOUNTAIN, TileIDs.MOUNTAIN_PEEK ])
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.Gray);
+}
 
-public class MountainPeekTile() : MapTile(TileIDs.MountainPeek, 30, Color.AnsiWhite,
-    new(new byte[] { TileIDs.MountainPeek, TileIDs.Mountain }));
+public record MountainPeekTile() : MapTile(TileIDs.MOUNTAIN_PEEK, 30,
+    new([ TileIDs.MOUNTAIN_PEEK, TileIDs.MOUNTAIN ]))
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.AnsiWhite);
+}
 
-public class RiverTile() : MapTile(TileIDs.River, 247, Color.AnsiBlue,
-    new(new byte[] { TileIDs.River, TileIDs.DeepRiver, TileIDs.Sand, TileIDs.Dirt }),
-    isolationGroup: new byte[] { TileIDs.River, TileIDs.DeepRiver });
+public record RiverTile() : MapTile(TileIDs.RIVER, 247,
+    new([ TileIDs.RIVER, TileIDs.DEEP_RIVER, TileIDs.SAND, TileIDs.DIRT ]),
+    isolationGroup: [ TileIDs.RIVER, TileIDs.DEEP_RIVER ])
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.AnsiBlue);
+}
 
-public class DeepRiverTile() : MapTile(TileIDs.DeepRiver, 247, Color.DarkBlue,
-    new(new byte[] { TileIDs.DeepRiver, TileIDs.River }));
+public record DeepRiverTile() : MapTile(TileIDs.DEEP_RIVER, 247,
+    new([ TileIDs.DEEP_RIVER, TileIDs.RIVER ]))
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.DarkBlue);
+}
 
-public class SandTile() : MapTile(TileIDs.Sand, 249, Color.Yellow,
-    new(new byte[] { TileIDs.Sand, TileIDs.Grass, TileIDs.River, TileIDs.Dirt }));
+public record SandTile() : MapTile(TileIDs.SAND, 249,
+    new([ TileIDs.SAND, TileIDs.GRASS, TileIDs.RIVER, TileIDs.DIRT ]))
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.Yellow);
+}
 
-public class DirtTile() : MapTile(TileIDs.Dirt, 249, Color.SaddleBrown,
-    new(new byte[] { TileIDs.Dirt, TileIDs.Grass }));
+public record DirtTile() : MapTile(TileIDs.DIRT, 249,
+    new([
+        TileIDs.DIRT, TileIDs.GRASS
+    ]))
+{
+    public readonly TileSpriteMetadata SpriteMetadata = new(Color.SaddleBrown);
+}
 
 public class PlainsTiles() : TileAtlas(
-    new MapTile[]
-    {
-        new GrassTile(),
+[
+    new GrassTile(),
         new TreeTile(),
         new MountainTile(),
         new MountainPeekTile(),
@@ -39,16 +64,9 @@ public class PlainsTiles() : TileAtlas(
         new DeepRiverTile(),
         new SandTile(),
         new DirtTile()
-    }, AtlasIDs.Plains)
+], AtlasIDs.PLAINS)
 {
     private static PlainsTiles? _instance;
 
-    public static PlainsTiles Instance
-    {
-        get
-        {
-            _instance ??= new();
-            return _instance;
-        }
-    }
+    public static PlainsTiles Instance => _instance ??= new();
 }
