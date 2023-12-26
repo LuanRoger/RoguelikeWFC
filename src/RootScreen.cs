@@ -1,10 +1,13 @@
 ﻿using System.Diagnostics;
+using LawGen.Core.Tiling;
+using LawGen.Information;
+using LawGen.WFC;
+using LawGen.WFC.Enum;
 using RoguelikeWFC.Components;
 using RoguelikeWFC.Components.Enums;
 using RoguelikeWFC.Components.Models;
 using RoguelikeWFC.Tiles;
-using RoguelikeWFC.WFC;
-using RoguelikeWFC.WFC.Enum;
+using RoguelikeWFC.Tiles.Sprites;
 
 namespace RoguelikeWFC;
 
@@ -101,11 +104,12 @@ internal class RootScreen : ScreenObject
         {
             for (int col = 0; col < worldWidth; col++)
             {
-                MapTile tile = worldGenerator.GetTileAtPossition(row, col);
-                if(tile.Background.HasValue)
-                    _world.SetGlyph(col, row, tile.GetSprite(), tile.Color, tile.Background.Value);
+                RenderableMapTile tile = (RenderableMapTile)worldGenerator.GetTileAtPossition(row, col);
+                TileSpriteMetadata spriteMetadata = tile.SpriteMetadata;
+                if(spriteMetadata.Background.HasValue)
+                    _world.SetGlyph(col, row, tile.GetSprite(), spriteMetadata.Foreground, spriteMetadata.Background.Value);
                 else 
-                    _world.SetGlyph(col, row, tile.GetSprite(), tile.Color);
+                    _world.SetGlyph(col, row, tile.GetSprite(), spriteMetadata.Foreground);
             }
         }
     }
@@ -139,11 +143,12 @@ internal class RootScreen : ScreenObject
         {
             for(int row = 0; row < worldWidth; row++)
             {
-                MapTile tile = worldMap.tiles[col, row];
-                if(tile.Background.HasValue)
-                    _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color, tile.Background.Value);
+                RenderableMapTile tile = (RenderableMapTile)worldMap.tiles[col, row];
+                TileSpriteMetadata spriteMetadata = tile.SpriteMetadata;
+                if(spriteMetadata.Background.HasValue)
+                    _world.SetGlyph(row, col, tile.GetSprite(true), spriteMetadata.Foreground, spriteMetadata.Background.Value);
                 else
-                    _world.SetGlyph(row, col, tile.GetSprite(true), tile.Color);
+                    _world.SetGlyph(row, col, tile.GetSprite(true), spriteMetadata.Foreground);
             }
         }
     }

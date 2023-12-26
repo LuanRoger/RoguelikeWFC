@@ -1,25 +1,26 @@
 ﻿using LawGen.Core.Tiling;
+using RoguelikeWFC.Tiles.Sprites;
 
 namespace RoguelikeWFC.Tiles;
 
-public record DesertSandTile() : MapTile(TileIDs.DESERT_SAND, [ 176, 177, 178 ],
+public record DesertSandTile() : RenderableMapTile(TileIDs.DESERT_SAND, [ 176, 177, 178 ],
     new([ TileIDs.DESERT_SAND, TileIDs.ROCK, TileIDs.CACTUS ]))
 {
-    public readonly TileSpriteMetadata SpriteMetadata = 
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
         new(Color.AnsiYellowBright, Color.LightYellow);
 }
 
-public record RockTile() : MapTile(TileIDs.ROCK, 239,
+public record RockTile() : RenderableMapTile(TileIDs.ROCK, 239,
     new([ TileIDs.DESERT_SAND ]))
 {
-    public readonly TileSpriteMetadata SpriteMetadata = 
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
         new(Color.DimGray, Color.LightYellow);
 }
 
-public record CactusTile() : MapTile(TileIDs.CACTUS, 33,
+public record CactusTile() : RenderableMapTile(TileIDs.CACTUS, 33,
     new([ TileIDs.DESERT_SAND ]))
 {
-    public readonly TileSpriteMetadata SpriteMetadata = 
+    public override TileSpriteMetadata SpriteMetadata { get; } = 
         new(Color.LimeGreen, Color.LightYellow);
 }
 
