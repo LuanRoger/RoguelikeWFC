@@ -1,7 +1,7 @@
-﻿using RoguelikeWFC.MapIO;
+﻿using LawGen.WFC;
+using RoguelikeWFC.MapIO;
 using RoguelikeWFC.MapIO.Models;
 using RoguelikeWFC.MetaMap;
-using RoguelikeWFC.WFC;
 using SadConsole.UI;
 using static SadConsole.UI.Window;
 

@@ -1,8 +1,8 @@
-﻿using RoguelikeWFC.MapIO;
+﻿using LawGen.Core.Tiling;
+using LawGen.WFC;
 using RoguelikeWFC.MapIO.Models;
 using RoguelikeWFC.MetaMap.Exceptions;
 using RoguelikeWFC.Tiles;
-using RoguelikeWFC.WFC;
 
 namespace RoguelikeWFC.MetaMap;
 

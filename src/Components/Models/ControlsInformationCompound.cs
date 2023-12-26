@@ -1,4 +1,6 @@
-﻿namespace RoguelikeWFC.Components.Models;
+﻿using LawGen.Information;
+
+namespace RoguelikeWFC.Components.Models;
 
 public class ControlsInformationCompound
 {
