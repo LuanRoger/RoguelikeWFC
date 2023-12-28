@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using LawGen.Core.Tiling;
+using LawGen.Core.Tiling.Internals;
 using LawGen.Information;
 using LawGen.WFC;
 using LawGen.WFC.Enum;
@@ -75,7 +76,7 @@ internal class RootScreen : ScreenObject
         if(worldGenerator.generationStepState != GenerationStepState.Finished)
         {
             worldGenerator.Wfc();
-            DrawnMap();
+            DrawnGenerationMap();
         }
         else
         {
@@ -96,22 +97,6 @@ internal class RootScreen : ScreenObject
         _saveLoadMapControlersMenu.MadeMapReadyToSave(worldMap);
         DrawnWorldMap();
         UpdateInformations();
-    }
-    
-    private void DrawnMap()
-    {
-        for (int row = 0; row < _height; row++)
-        {
-            for (int col = 0; col < worldWidth; col++)
-            {
-                RenderableMapTile tile = (RenderableMapTile)worldGenerator.GetTileAtPossition(row, col);
-                TileSpriteMetadata spriteMetadata = tile.SpriteMetadata;
-                if(spriteMetadata.Background.HasValue)
-                    _world.SetGlyph(col, row, tile.GetSprite(), spriteMetadata.Foreground, spriteMetadata.Background.Value);
-                else 
-                    _world.SetGlyph(col, row, tile.GetSprite(), spriteMetadata.Foreground);
-            }
-        }
     }
     
     private void LoadWorldMap(WorldMap map)
@@ -139,19 +124,25 @@ internal class RootScreen : ScreenObject
     private void DrawnWorldMap()
     {
         if(worldMap is null) return;
-        for(int col = 0; col < _height; col++)
+        for(int row = 0; row < _height; row++)
         {
-            for(int row = 0; row < worldWidth; row++)
+            for(int col = 0; col < worldWidth; col++)
             {
-                RenderableMapTile tile = (RenderableMapTile)worldMap.tiles[col, row];
-                TileSpriteMetadata spriteMetadata = tile.SpriteMetadata;
-                if(spriteMetadata.Background.HasValue)
-                    _world.SetGlyph(row, col, tile.GetSprite(true), spriteMetadata.Foreground, spriteMetadata.Background.Value);
-                else
-                    _world.SetGlyph(row, col, tile.GetSprite(true), spriteMetadata.Foreground);
+                RenderTile(row: row, col: col, true);
             }
         }
     }
+    private void DrawnGenerationMap()
+    {
+        for (int row = 0; row < _height; row++)
+        {
+            for (int col = 0; col < worldWidth; col++)
+            {
+                RenderTile(row: row, col: col);
+            }
+        }
+    }
+    
     private void UpdateInformations()
     {
         GenerationInformation mapInformation = worldGenerator.DumpGenerationInformation();
@@ -180,5 +171,27 @@ internal class RootScreen : ScreenObject
         _world.Clear();
         
         _generationReady = false;
+    }
+
+    private void RenderTile(int row, int col, bool fromWorldMap = false)
+    {
+        MapTile tileAtPossition = fromWorldMap ? worldMap!.tiles[row, col] : worldGenerator.GetTileAtPossition(row, col);
+        if(tileAtPossition is SuperTile superTile)
+        {
+            if(superTile.inConflict)
+                _world.SetGlyph(col, row, 63, Color.Red);
+            else
+            {
+                char text = superTile.Entropy.Length.ToString()[0];
+                _world.SetGlyph(col, row, text);
+            }
+            return;
+        }
+        RenderableMapTile tile = (RenderableMapTile)tileAtPossition;
+        TileSpriteMetadata spriteMetadata = tile.SpriteMetadata;
+        if(spriteMetadata.Background.HasValue)
+            _world.SetGlyph(col, row, tile.GetSprite(fromWorldMap), spriteMetadata.Foreground, spriteMetadata.Background.Value);
+        else
+            _world.SetGlyph(col, row, tile.GetSprite(fromWorldMap), spriteMetadata.Foreground);
     }
 }

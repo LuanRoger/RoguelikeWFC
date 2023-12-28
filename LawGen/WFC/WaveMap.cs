@@ -1,4 +1,5 @@
 ﻿using LawGen.Core.Tiling;
+using LawGen.Core.Tiling.Internals;
 using LawGen.Exceptions;
 using LawGen.WFC.Utils;
 
@@ -218,7 +219,12 @@ public class WaveMap
     {
         WavePossition possition = wave.wave[rowIndex, columnIndex];
         if(possition.conflict || !possition.collapsed)
-            throw new NoTileAtPossitionException(rowIndex, columnIndex);
+        {
+            return new SuperTile
+            {
+                Entropy = possition.Entropy
+            };
+        }
         
         byte tileId = possition.Entropy[0];
         return GetTileById(tileId);

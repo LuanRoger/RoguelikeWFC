@@ -9,6 +9,6 @@ public abstract record RenderableMapTile : MapTile
     protected RenderableMapTile(byte id, ushort glyph, TileSocket tileSocket, byte[]? isolationGroup = null) : 
         base(id, glyph, tileSocket, isolationGroup) { }
     
-    protected RenderableMapTile(byte id, ushort[] variationses, TileSocket tileSocket, byte[]? isolationGroup = null) : 
-        base(id, variationses, tileSocket, isolationGroup) { }
+    protected RenderableMapTile(byte id, ushort[] variations, TileSocket tileSocket, byte[]? isolationGroup = null) : 
+        base(id, variations, tileSocket, isolationGroup) { }
 }

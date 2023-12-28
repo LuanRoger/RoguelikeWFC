@@ -20,19 +20,11 @@ public abstract record MapTile
         TileSocket = tileSocket;
         IsolationGroup = isolationGroup;
     }
-    protected MapTile(byte id, char glyph, TileSocket tileSocket, 
+    protected MapTile(byte id, ushort[] variations, TileSocket tileSocket, 
         byte[]? isolationGroup = null)
     {
         Id = id;
-        Variations = [glyph];
-        TileSocket = tileSocket;
-        IsolationGroup = isolationGroup;
-    }
-    protected MapTile(byte id, ushort[] variationses, TileSocket tileSocket, 
-        byte[]? isolationGroup = null)
-    {
-        Id = id;
-        Variations = variationses;
+        Variations = variations;
         TileSocket = tileSocket;
         IsolationGroup = isolationGroup;
     }
