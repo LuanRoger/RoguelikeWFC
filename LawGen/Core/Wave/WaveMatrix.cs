@@ -2,10 +2,10 @@
 
 namespace LawGen.Core.Wave;
 
-public readonly struct WaveMatrix(int width, int height, WavePossition[,] wave) : IWaveMatrixMapCommons
+public readonly struct WaveMatrix(uint width, uint height, WavePossition[,] wave) : IWaveMatrixCommons
 {
-    public readonly int Width = width;
-    public readonly int Height = height;
+    public readonly uint Width = width;
+    public readonly uint Height = height;
     public WavePossition[,] wave { get; } = wave;
     public int CollapsedTilesCount
     {
@@ -34,7 +34,7 @@ public readonly struct WaveMatrix(int width, int height, WavePossition[,] wave) 
             return true;
         }
     }
-    public int GetCountOfConflicts
+    public int ConflictsTilesCount
     {
         get
         {
@@ -90,5 +90,24 @@ public readonly struct WaveMatrix(int width, int height, WavePossition[,] wave) 
         }
 
         return new(smallerEntropyRow, smallerEntropyCol);
+    }
+    
+    /// <summary>
+    /// Check if the offset area around the tile is out of bound.
+    /// </summary>
+    /// <param name="possitionArea">The tile area</param>
+    /// <param name="top">The top side is out of bounds</param>
+    /// <param name="right">The right side is out of bounds</param>
+    /// <param name="bottom">The bottom side is out of bounds</param>
+    /// <param name="left">The left side is out of bounds</param>
+    /// <returns>Return <c>true</c> if one of the sides is out of bound</returns>
+    public bool CheckAreaOutOfBound(in WavePossitionArea possitionArea, out bool top, out bool right, out bool bottom, out bool left)
+    {
+        top = possitionArea.TopRaw < 0 || possitionArea.TopRaw >= Height;
+        right = possitionArea.RightRaw < 0 || possitionArea.RightRaw >= Width;
+        bottom = possitionArea.BottomRaw < 0 || possitionArea.BottomRaw >= Height;
+        left = possitionArea.LeftRaw < 0 || possitionArea.LeftRaw >= Width;
+
+        return top || right || bottom || left;
     }
 }

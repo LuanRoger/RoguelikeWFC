@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using LawGen.Core.Tiling;
 using LawGen.Core.Tiling.Internals;
+using LawGen.Core.Wave.Chunk.Types;
 using LawGen.Information;
 using LawGen.WFC;
 using LawGen.WFC.Enum;
@@ -73,7 +74,7 @@ internal class RootScreen : ScreenObject
     
     private void InterateInteractive()
     {
-        if(worldGenerator.generationStepState != GenerationStepState.Finished)
+        if(worldGenerator.generationStepState != ChunkGenerationStepState.Finished)
         {
             worldGenerator.Wfc();
             DrawnGenerationMap();

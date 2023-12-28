@@ -2,12 +2,14 @@
 
 namespace LawGen.Core.Wave;
 
-public partial class WaveMap : IWaveMatrixMapCommons
+public partial class Wave : IWaveMatrixCommons
 {
     public bool HasOnlyConflicts =>
         waveMatrix.HasOnlyConflicts;
     public int CollapsedTilesCount =>
         waveMatrix.CollapsedTilesCount;
+    public int ConflictsTilesCount =>
+        waveMatrix.ConflictsTilesCount;
     
     public void UpdateEntropyAt(WavePossitionPoint possitionPoint, byte[] newEntropy) =>
         waveMatrix.UpdateEntropyAt(possitionPoint, newEntropy);
