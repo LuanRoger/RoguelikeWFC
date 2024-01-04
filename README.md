@@ -2,6 +2,8 @@
 
 A demo of a variant of the [Wave Function Collapse](https://github.com/mxgmn/WaveFunctionCollapse) algorithm based on rules. As the name suggests, it is inspired by the WFC but instead of using a bitmap as input, it uses a set of rules, which are applied to the tiles on an atlas. That way, the user can have more control over the output.
 
+![](https://github.com/LuanRoger/RoguelikeWFC/blob/main/images/demo.gif)
+
 ## The rules
 
 The tile's rules are simple, they define which tile can be placed on side of another tile. For example, the following tile define a `TileSocket` that contains the tiles it can be placed next to:
