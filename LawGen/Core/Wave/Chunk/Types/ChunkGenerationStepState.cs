@@ -1,6 +1,6 @@
-﻿namespace LawGen.WFC.Enum;
+﻿namespace LawGen.Core.Wave.Chunk.Types;
 
-public enum GenerationStepState
+public enum ChunkGenerationStepState
 {
     Idle,
     WaveCollapse,
