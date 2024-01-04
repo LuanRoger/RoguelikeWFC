@@ -1,7 +1,7 @@
 ﻿using RoguelikeWFC;
 using SadConsole.Configuration;
 
-Settings.WindowTitle = "Roguelike Wave Function Colapse";
+Settings.WindowTitle = "Roguelike Wave Function Collapse";
 
 Builder gameStartup = new Builder()
     .SetScreenSize(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT)
